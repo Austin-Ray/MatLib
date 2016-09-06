@@ -55,7 +55,7 @@ public final class MatLib {
     double[][] matrixC = new double[matrixA.length][matrixA[0].length];
 
     for (int i = 0; i < matrixC.length; i++) {
-      for (int j = 0; j < matrixC[0].length; j++) {
+      for (int j = 0; j < matrixC[i].length; j++) {
         if(matrixA[i].length != matrixB[i].length) {
           throw new NonConformableMatrixException();
         }

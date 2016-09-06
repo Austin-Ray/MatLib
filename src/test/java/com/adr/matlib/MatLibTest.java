@@ -29,7 +29,7 @@ public class MatLibTest {
     assertArrayEquals(matrixC, MatLib.addMatrix(matrixA, matrixB));
 
     double[][] mismatchMatrix = {{0}};
-    double[][] mismatchMatrix2 = {{0, 0, 0}, {0}};
+    double[][] mismatchMatrix2 = new double[2][6];
 
     try {
       MatLib.addMatrix(twoNGen, mismatchMatrix);
