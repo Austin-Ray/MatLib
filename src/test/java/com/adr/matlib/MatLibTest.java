@@ -9,6 +9,14 @@ import java.util.Random;
 
 public class MatLibTest {
   @Test
+  public void subtractMatrix() throws Exception {
+    double[][] twoNGen = MatLib.generateIdentityMatrix(2);
+    double[][] twoNGen2 =MatLib.generateIdentityMatrix(2);
+
+    assertArrayEquals(new double[2][2], MatLib.subtractMatrix(twoNGen, twoNGen2));
+  }
+
+  @Test
   public void addMatrix() throws Exception {
     double[][] twoNGen = MatLib.generateIdentityMatrix(2);
     double[][] twoNAddExpected = {{2,0}, {0,2}};
@@ -21,6 +29,7 @@ public class MatLibTest {
     assertArrayEquals(matrixC, MatLib.addMatrix(matrixA, matrixB));
 
     double[][] mismatchMatrix = {{0}};
+    double[][] mismatchMatrix2 = {{0}, {0}};
 
     try {
       MatLib.addMatrix(twoNGen, mismatchMatrix);

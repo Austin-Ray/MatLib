@@ -64,6 +64,17 @@ public final class MatLib {
   }
 
   /**
+   * Subtract Matrix B from Matrix A
+   * @param matrixA                           Matrix A
+   * @param matrixB                           Matrix B
+   * @return                                  Resulting Matrix C
+   * @throws NonConformableMatrixException    When Matrix sizes are not compatible.
+   */
+  public static double[][] subtractMatrix(double[][] matrixA, double[][] matrixB) throws NonConformableMatrixException {
+    return addMatrix(matrixA, multipleByScalar(-1, matrixB));
+  }
+
+  /**
    * Generate a n x n identity matrix
    * @param n     Column/Row size
    * @return      n x n identity matrix
@@ -78,6 +89,12 @@ public final class MatLib {
     return identityMatrix;
   }
 
+  /**
+   * Multiply a matrix by a scalar vector
+   * @param k         Scalar multiple
+   * @param matrix    Original matrix
+   * @return          Scaled matrix
+   */
   public static double[][] multipleByScalar(int k, double[][] matrix) {
     for(int i = 0; i < matrix.length; i++) {
       for(int j = 0; j < matrix[0].length; j++) {
