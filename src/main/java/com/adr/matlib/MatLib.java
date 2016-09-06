@@ -108,4 +108,41 @@ public final class MatLib {
 
     return matrix;
   }
+
+  /**
+   * Gauss-Jordan elimination for a matrix system Ax=B
+   * @param matrixA     Matrix A
+   * @param matrixB     Matrix B
+   * @return            Solution for a system of equations
+   */
+  public static double[][] gaussJordanElimination(double[][] matrixA, double[][] matrixB) {
+    int E = 1;
+    double[][] matrixC = concatenateMatrix(matrixA, matrixB);
+
+
+
+    for(int j = 1; j < matrixA.length; j++) {
+
+    }
+
+    return matrixC;
+  }
+
+  public static double[][] concatenateMatrix(double[][] matrixA, double[][] matrixB) {
+    double[][] matrixC = new double[matrixA.length][matrixA[0].length + matrixB[0].length];
+
+    for(int i = 0; i < matrixA.length; i++) {
+      for(int j = 0; j < matrixA[i].length; j++) {
+        matrixC[i][j] = matrixA[i][j];
+      }
+    }
+
+    for(int i = 0; i < matrixB.length; i++) {
+      for(int j = 0; j < matrixB.length; j++) {
+        matrixC[i][matrixA[i].length + j] = matrixB[i][j];
+      }
+    }
+
+    return matrixC;
+  }
 }

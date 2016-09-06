@@ -9,6 +9,17 @@ import java.util.Random;
 
 public class MatLibTest {
   @Test
+  public void concatenateMatrix() throws Exception {
+    double[][] twoNGen = MatLib.generateIdentityMatrix(2);
+    double[][] twoNGen2 = MatLib.generateIdentityMatrix(2);
+
+    double[][] concatMatrix = MatLib.concatenateMatrix(twoNGen, twoNGen2);
+    double[][] expectedMatrix = {{1,0,1,0},{0,1,0,1}};
+
+    assertArrayEquals(expectedMatrix, concatMatrix);
+  }
+
+    @Test
   public void subtractMatrix() throws Exception {
     double[][] twoNGen = MatLib.generateIdentityMatrix(2);
     double[][] twoNGen2 =MatLib.generateIdentityMatrix(2);
