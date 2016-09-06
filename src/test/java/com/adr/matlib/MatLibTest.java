@@ -29,10 +29,11 @@ public class MatLibTest {
     assertArrayEquals(matrixC, MatLib.addMatrix(matrixA, matrixB));
 
     double[][] mismatchMatrix = {{0}};
-    double[][] mismatchMatrix2 = {{0}, {0}};
+    double[][] mismatchMatrix2 = {{0, 0, 0}, {0}};
 
     try {
       MatLib.addMatrix(twoNGen, mismatchMatrix);
+      MatLib.addMatrix(twoNGen, mismatchMatrix2);
       throw new Exception();
     } catch(NonConformableMatrixException e) {
       return;

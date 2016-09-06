@@ -48,7 +48,7 @@ public final class MatLib {
    * @throws NonConformableMatrixException       Matrix do not have compatible sizes
    */
   public static double[][] addMatrix(double[][] matrixA, double[][] matrixB) throws NonConformableMatrixException {
-    if(matrixA.length != matrixB.length || matrixA[0].length != matrixB[0].length) {
+    if(matrixA.length != matrixB.length) {
       throw new NonConformableMatrixException();
     }
 
@@ -56,6 +56,10 @@ public final class MatLib {
 
     for (int i = 0; i < matrixC.length; i++) {
       for (int j = 0; j < matrixC[0].length; j++) {
+        if(matrixA[i].length != matrixB[i].length) {
+          throw new NonConformableMatrixException();
+        }
+
         matrixC[i][j] = matrixA[i][j] + matrixB[i][j];
       }
     }
