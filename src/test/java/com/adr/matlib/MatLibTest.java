@@ -9,6 +9,17 @@ import java.util.Random;
 
 public class MatLibTest {
   @Test
+  public void gaussJordanElimination() throws Exception {
+    double[][] twoNtwo = {{2, 0}, {0, 2}};
+    double[][] expected ={{1,0,0},{0,1,0}};
+
+    double[][] array = {{0}, {0}};
+    double[][] result = MatLib.gaussJordanElimination(twoNtwo, array);
+
+    assertArrayEquals(expected, result);
+  }
+
+  @Test
   public void concatenateMatrix() throws Exception {
     double[][] twoNGen = MatLib.generateIdentityMatrix(2);
     double[][] twoNGen2 = MatLib.generateIdentityMatrix(2);

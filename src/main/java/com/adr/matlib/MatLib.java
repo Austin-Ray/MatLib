@@ -2,7 +2,7 @@ package com.adr.matlib;
 
 import com.adr.matlib.exception.NonConformableMatrixException;
 
-public final class MatLib {
+final class MatLib {
 
   /**
    * Absolute value of an integer value
@@ -47,7 +47,8 @@ public final class MatLib {
    * @return                                     First matrix + second matrix
    * @throws NonConformableMatrixException       Matrix do not have compatible sizes
    */
-  public static double[][] addMatrix(double[][] matrixA, double[][] matrixB) throws NonConformableMatrixException {
+  public static double[][] addMatrix(double[][] matrixA, double[][] matrixB)
+      throws NonConformableMatrixException {
     if(matrixA.length != matrixB.length) {
       throw new NonConformableMatrixException();
     }
@@ -74,7 +75,8 @@ public final class MatLib {
    * @return                                  Resulting Matrix C
    * @throws NonConformableMatrixException    When Matrix sizes are not compatible.
    */
-  public static double[][] subtractMatrix(double[][] matrixA, double[][] matrixB) throws NonConformableMatrixException {
+  public static double[][] subtractMatrix(double[][] matrixA, double[][] matrixB)
+      throws NonConformableMatrixException {
     return addMatrix(matrixA, multipleByScalar(-1, matrixB));
   }
 
@@ -117,15 +119,75 @@ public final class MatLib {
    */
   public static double[][] gaussJordanElimination(double[][] matrixA, double[][] matrixB) {
     int E = 1;
-    double[][] matrixC = concatenateMatrix(matrixA, matrixB);
+    double[][] augMatrix = concatenateMatrix(matrixA, matrixB);
 
+    for(int j = 0; j < augMatrix.length; j++) {
+      int p = computePivot(augMatrix, j);
 
+      if(augMatrix[p][j] == 0) {
+        E = 0;
+        return new double[][] {{-1}};
+      }
 
-    for(int j = 1; j < matrixA.length; j++) {
+      swapRow(augMatrix, j, p);
+      divideRow(augMatrix, j);
 
+      for(int i = 0; i < augMatrix.length; i++) {
+        if(i != j) {
+          subtractRow(augMatrix, j, i, augMatrix[j][i]);
+        }
+      }
     }
 
-    return matrixC;
+    return augMatrix;
+  }
+
+  public static void subtractRow(double[][] matrix, int row1, int row2, double times) {
+    for(int i = 0; i < matrix[row1].length; i++) {
+      matrix[row2][i] -= times * matrix[row1][i];
+    }
+  }
+
+  /**
+   * Divides a row in a matrix by a value
+   * @param matrix    Matrix being operated on
+   * @param row       Row being divided
+   */
+  public static void divideRow(double[][] matrix, int row) {
+    for(int i = 0; i < matrix[row].length; i++ ) {
+      matrix[row][i] /= matrix[row][row];
+    }
+  }
+
+  /**
+   * Swaps two rows in a matrix
+   * @param matrix    Matrix operation is being performed on
+   * @param row1      Row being replaced
+   * @param row2      Row replacing the other
+   */
+  public static void swapRow(double[][] matrix, int row1, int row2) {
+    double[] temp = matrix[row1];
+    matrix[row1] = matrix[row2];
+    matrix[row2] = temp;
+  }
+
+  /**
+   * Computes a pivot point by checks every row in a column for
+   * the greatest value and returns the row number for that value
+   * @param matrix    Matrix being checked
+   * @param column    Column to check in
+   * @return          Row # with the greatest value
+   */
+  public static int computePivot(double[][] matrix, int column) {
+    int p = Integer.MIN_VALUE;
+
+    for(int i = 0; i < matrix.length; i++) {
+      if(matrix[i][column] > p) {
+        p = i;
+      }
+    }
+
+    return p;
   }
 
   public static double[][] concatenateMatrix(double[][] matrixA, double[][] matrixB) {
@@ -137,9 +199,9 @@ public final class MatLib {
       }
     }
 
-    for(int i = 0; i < matrixB.length; i++) {
-      for(int j = 0; j < matrixB.length; j++) {
-        matrixC[i][matrixA[i].length + j] = matrixB[i][j];
+    for (int i = 0; i < matrixB.length; i++) {
+      for(int j = 0; j < matrixB[i].length; j++) {
+        matrixC[i][j + matrixA[i].length] = matrixB[i][j];
       }
     }
 
