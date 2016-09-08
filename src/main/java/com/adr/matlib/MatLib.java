@@ -57,10 +57,6 @@ final class MatLib {
 
     for (int i = 0; i < matrixC.length; i++) {
       for (int j = 0; j < matrixC[i].length; j++) {
-        if(matrixA[i].length != matrixB[i].length) {
-          throw new NonConformableMatrixException();
-        }
-
         matrixC[i][j] = matrixA[i][j] + matrixB[i][j];
       }
     }
@@ -194,15 +190,11 @@ final class MatLib {
     double[][] matrixC = new double[matrixA.length][matrixA[0].length + matrixB[0].length];
 
     for(int i = 0; i < matrixA.length; i++) {
-      for(int j = 0; j < matrixA[i].length; j++) {
-        matrixC[i][j] = matrixA[i][j];
-      }
+      System.arraycopy(matrixA[i], 0, matrixC[i], 0, matrixA[i].length);
     }
 
     for (int i = 0; i < matrixB.length; i++) {
-      for(int j = 0; j < matrixB[i].length; j++) {
-        matrixC[i][j + matrixA[i].length] = matrixB[i][j];
-      }
+      System.arraycopy(matrixB[i], 0, matrixC[i], matrixA[i].length, matrixB[i].length);
     }
 
     return matrixC;

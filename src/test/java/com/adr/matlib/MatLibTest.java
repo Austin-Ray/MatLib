@@ -9,14 +9,47 @@ import java.util.Random;
 
 public class MatLibTest {
   @Test
+  public void subtractRow() throws Exception {
+    double[][] matrix = MatLib.generateIdentityMatrix(2);
+
+    MatLib.subtractRow(matrix, 0, 1, 1);
+
+    assertArrayEquals(new double[][]{{1, 0},{-1, 1}}, matrix);
+  }
+
+  @Test
+  public void divideRow() throws Exception {
+    double[][] matrix = {{1, 2}, {1, 4}};
+    MatLib.divideRow(matrix, 1);
+    assertEquals(new double[][]{{1, 2}, {0.25, 1}}, matrix);
+  }
+
+  @Test
+  public void swapRow() throws Exception {
+    double[][] matrix = MatLib.generateIdentityMatrix(2);
+    MatLib.swapRow(matrix, 0, 1);
+    assertArrayEquals(new double[][]{{0, 1}, {1, 0}}, matrix);
+  }
+
+  @Test
+  public void computePivot() throws Exception {
+    double[][] arr = MatLib.generateIdentityMatrix(2);
+    MatLib.swapRow(arr, 0, 1);
+    assertEquals(1, MatLib.computePivot(arr, 0));
+  }
+
+  @Test
   public void gaussJordanElimination() throws Exception {
     double[][] twoNtwo = {{2, 0}, {0, 2}};
     double[][] expected ={{1,0,0},{0,1,0}};
 
     double[][] array = {{0}, {0}};
-    double[][] result = MatLib.gaussJordanElimination(twoNtwo, array);
 
-    assertArrayEquals(expected, result);
+    assertArrayEquals(expected, MatLib.gaussJordanElimination(twoNtwo, array));
+
+    // Test if the matrix cannot be reduced using Gauss Jordan Elimination
+    assertArrayEquals(new double[][]{{-1}},
+        MatLib.gaussJordanElimination(new double[][]{{0,0},{0,0}}, new double[][]{{0},{0}}));
   }
 
   @Test
