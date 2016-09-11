@@ -231,6 +231,58 @@ final class MatLib {
     return x;
   }
 
+  public static double calculateDeterminat(double[][] matrix) throws NonConformableMatrixException {
+    int r = 0;
+    double det;
+
+    if (matrix.length != matrix[0].length) {
+      throw new NonConformableMatrixException("Matrix not n x n");
+    }
+
+    for(int j = 0; j < matrix.length; j++) {
+      int p = computePivot(matrix, j);
+
+      if(roundDouble(matrix[p][j]) == 0) {
+        det = 0;
+        return det;
+      }
+
+      if(p > j) {
+        matrix = swapRow(matrix, j, p);
+        r += 1;
+      }
+
+      for (int i = 0; i < matrix.length; i++) {
+        if (i > j) {
+          subtractRow(matrix, j, i, matrix[i][j] / matrix[j][j]);
+        }
+      }
+    }
+
+    double sum = 1;
+
+    for(int i = 0; i < matrix.length; i++) {
+      sum *= matrix[i][i];
+    }
+
+    return toPower(-1, r) * sum;
+  }
+
+  public static double toPower(double number, int power) {
+    double newNumber = 1.0;
+    if(power < 0) {
+      for(int i = abs(power); i > 0; i--) {
+        newNumber = newNumber / number;
+      }
+    } else {
+      for(int i = power; i > 0; i--) {
+        newNumber *= number;
+      }
+    }
+
+    return newNumber;
+  }
+
   public static double[][][] invertMatrix(double[][] matrixA) {
     int E = 1;
     double[][] matrixC = concatenateMatrix(matrixA, generateIdentityMatrix(matrixA.length));

@@ -9,6 +9,18 @@ import java.util.Random;
 
 public class MatLibTest {
   @Test
+  public void calculateDeterminat() throws Exception {
+    double[][] matrix = {{1, 4, 0}, {0, 2, 6}, {-1, 0, 1}};
+    assertEquals(-22, MatLib.calculateDeterminat(matrix), 0.1);
+  }
+
+  @Test
+  public void toPower() throws Exception {
+    assertEquals(4, MatLib.toPower(2, 2), 0.1);
+    assertEquals(1.0 / 4.0, MatLib.toPower(2, -2), 0.0001);
+  }
+
+  @Test
   public void backSubstitution() throws Exception {
     double[] expected = {-9, -2, 5};
 
