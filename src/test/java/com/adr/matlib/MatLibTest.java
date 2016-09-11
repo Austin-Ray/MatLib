@@ -31,7 +31,7 @@ public class MatLibTest {
   @Test
   public void swapRow() throws Exception {
     double[][] matrix = MatLib.generateIdentityMatrix(2);
-    MatLib.swapRow(matrix, 0, 1);
+    matrix = MatLib.swapRow(matrix, 0, 1);
     assertArrayEquals(new double[][]{{0, 1}, {1, 0}}, matrix);
   }
 
@@ -39,7 +39,7 @@ public class MatLibTest {
   public void computePivot() throws Exception {
     double[][] arr = MatLib.generateIdentityMatrix(2);
     MatLib.swapRow(arr, 0, 1);
-    assertEquals(1, MatLib.computePivot(arr, 0));
+    assertEquals(0, MatLib.computePivot(arr, 0));
   }
 
   @Test
