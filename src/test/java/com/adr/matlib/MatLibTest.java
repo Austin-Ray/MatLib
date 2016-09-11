@@ -9,19 +9,23 @@ import java.util.Random;
 
 public class MatLibTest {
   @Test
-  public void subtractRow() throws Exception {
-    double[][] matrix = MatLib.generateIdentityMatrix(2);
+  public void invertMatrix() throws Exception {
+    double[][] matrixA = {{2, -1, 0}, {-1, 2, -1}, {0, -1, 2}};
+    double[][][] partitions = MatLib.invertMatrix(matrixA);
 
-    MatLib.subtractRow(matrix, 0, 1, 1);
+    double[][] expected = {{3.0/4, 1.0/2, 1.0/4}, {1.0/2, 1.0, 1.0/2}, {1.0/4, 1.0/2, 3.0/4}};
 
-    assertArrayEquals(new double[][]{{1, 0},{-1, 1}}, matrix);
+    assertArrayEquals(MatLib.generateIdentityMatrix(matrixA.length), partitions[0]);
+    assertArrayEquals(expected, partitions[1]);
   }
 
   @Test
-  public void divideRow() throws Exception {
-    double[][] matrix = {{1, 2}, {1, 4}};
-    MatLib.divideRow(matrix, 1);
-    assertEquals(new double[][]{{1, 2}, {0.25, 1}}, matrix);
+  public void subtractRow() throws Exception {
+    double[][] matrix = MatLib.generateIdentityMatrix(2);
+
+    double[][] result = MatLib.subtractRow(matrix, 0, 1, 1);
+
+    assertArrayEquals(new double[][]{{1, 0},{-1, 1}}, result);
   }
 
   @Test
@@ -40,16 +44,23 @@ public class MatLibTest {
 
   @Test
   public void gaussJordanElimination() throws Exception {
-    double[][] twoNtwo = {{2, 0}, {0, 2}};
-    double[][] expected ={{1,0,0},{0,1,0}};
+    double[][] part1 = {{1, 3, 1},
+                        {1, 1, -1},
+                        {3, 11, 5}};
 
-    double[][] array = {{0}, {0}};
+    double[][] part2 = {{9},
+                        {1},
+                        {35}};
 
-    assertArrayEquals(expected, MatLib.gaussJordanElimination(twoNtwo, array));
+    double[][][] partitions = MatLib.gaussJordanElimination(part1, part2);
 
-    // Test if the matrix cannot be reduced using Gauss Jordan Elimination
-    assertArrayEquals(new double[][]{{-1}},
-        MatLib.gaussJordanElimination(new double[][]{{0,0},{0,0}}, new double[][]{{0},{0}}));
+    double[][] resultPart1 = partitions[0];
+    double[][] resultPart2 = partitions[1];
+
+    double[][] expected = {{1, 0, -2}, {0, 1, 1}, {0, 0, 0}};
+
+    assertArrayEquals(expected, resultPart1);
+    assertArrayEquals(new double[][]{{-3}, {4}, {0}}, resultPart2);
   }
 
   @Test
