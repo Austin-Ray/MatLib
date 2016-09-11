@@ -116,19 +116,30 @@ final class MatLib {
     return roundDouble(d * p) / p;
   }
 
+  /**
+   * Implementation of OpenJDK's round method for double precision numbers
+   * @param d     Numbers being rounded
+   * @return      Value of the argument rounded to the nearest long value
+   */
   public static double roundDouble(double d) {
-    long var2 = Double.doubleToRawLongBits(d);
-    long var4 = (var2 & 9218868437227405312L) >> 52;
-    long var6 = 1074L - var4;
-    if((var6 & -64L) == 0L) {
-      long var8 = var2 & 4503599627370495L | 4503599627370496L;
-      if(var2 < 0L) {
-        var8 = -var8;
+    // Double precision width
+    int precisionWidth = 53;
+    // 2^10 - 1
+    int precisionBias = 1023;
+    long signIfBitMask = 4503599627370495L;
+
+    long rawLongBits = Double.doubleToRawLongBits(d);
+    long biasedExp = (rawLongBits & Long.MAX_VALUE) >> precisionWidth - 1;
+    long shift = (precisionWidth - 2 + precisionBias) - biasedExp;
+    if((shift & -64L) == 0L) {
+      long r = rawLongBits &  signIfBitMask | signIfBitMask + 1;
+      if(rawLongBits < 0L) {
+        r = -r;
       }
 
-      return (var8 >> (int)var6) + 1L >> 1;
+      return (r >> (int)shift) + 1L >> 1L;
     } else {
-      return (long)d;
+      return (long) d;
     }
   }
 
@@ -165,37 +176,59 @@ final class MatLib {
     return partitionMatrix(matrixC, matrixC.length - 1);
   }
 
-  public static double[][][] determinants(double[][] matrixA, double[][] matrixB)
+  public static double[][][] gaussianElimination(double[][] matrixA, double[][] matrixB)
       throws NonConformableMatrixException {
-    if (matrixB[0].length > 1) {
-      throw new NonConformableMatrixException("Matrix B has width greater than 1");
-    }
-
     int E = 1;
     double[][] matrixC = concatenateMatrix(matrixA, matrixB);
 
-    for (int i = 0; i < matrixC.length; i++) {
-      int p = computePivot(matrixC, i);
+    if (matrixC[0].length != matrixC.length + 1) {
+      throw new NonConformableMatrixException("Matrix B has width greater than 1");
+    }
 
-      if (roundDouble(matrixC[p][i]) == 0) {
+    // For j = 0 to matrixC.length, do
+    for (int j = 0; j < matrixC.length; j++) {
+      // Compute pivot index j <= p <= matrixC.length
+      int p = computePivot(matrixC, j);
+
+      // If matrixC[p][j] == 0, set E = 0 and exit
+      if (roundDouble(matrixC[p][j]) == 0) {
         E = 0;
         return partitionMatrix(matrixC, matrixC.length - 1);
       }
 
-      if (p > i) {
-        matrixC = swapRow(matrixC, i, p);
+      // If p > j, then swap rows p and j
+      if (p > j) {
+        matrixC = swapRow(matrixC, j, p);
       }
 
-      matrixC = divideRow(matrixC, i, matrixC[i][i]);
-
-      for (int j = 0; j < matrixC.length; j++) {
-        if (j != i) {
-          matrixC = subtractRow(matrixC, i, j, matrixC[j][i] / matrixC[j][j]);
+      // For each j > j, subtract matrixC[j][j] / matrixC[j][j] times row j from row j
+      for (int i = 0; i < matrixC.length; i++) {
+        if (i > j) {
+          matrixC = subtractRow(matrixC, j, i, matrixC[i][j] / matrixC[j][j]);
         }
       }
     }
 
+    // Partition matrix as C = [D, e] where D is n x n and e is n X 1
     return partitionMatrix(matrixC, matrixC.length - 1);
+  }
+
+  public static double[] backSubstitution(double[][][] partition) {
+    double[][] D = partition[0];
+    double[][] e = partition[1];
+    double[]   x = new double[D.length];
+
+    for(int j = D.length - 1; j >= 0; j--) {
+      double sum = 0;
+
+      for(int i = j + 1; i < D[j].length; i++) {
+        sum += (D[j][i] * x[i]);
+      }
+
+      x[j] =  roundDouble((e[j][0] - sum) / D[j][j]);
+    }
+
+    return x;
   }
 
   public static double[][][] invertMatrix(double[][] matrixA) {
@@ -230,13 +263,6 @@ final class MatLib {
     double[][] part1 = new double[matrix.length][sizeOfFirstPart + 1];
     double[][] part2 = new double[matrix.length][matrix[0].length - sizeOfFirstPart - 1];
 
-    for(int i = 0; i < matrix.length; i++) {
-      for(int j = 0; j < matrix[i].length; j++) {
-        System.out.print(matrix[i][j] + "\t\t");
-      }
-      System.out.println("");
-    }
-
     for(int i = 0; i < part1.length; i++) {
       for(int j = 0; j < part1[0].length; j++) {
         part1[i][j] = roundDouble(matrix[i][j], 10);
@@ -256,11 +282,11 @@ final class MatLib {
     return parts;
   }
 
-  public static double[][] subtractRow(double[][] matrix, int row1, int row2, double times) {
+  public static double[][] subtractRow(double[][] matrix, int value, int from, double times) {
     double[][] copy = matrix.clone();
 
     for(int i = 0; i < copy[0].length; i++) {
-      copy[row2][i] -= times * copy[row1][i];
+      copy[from][i] -= times * copy[value][i];
     }
 
     return copy;
@@ -290,7 +316,7 @@ final class MatLib {
     int pivot = column;
 
     for(int i = column; i < matrix.length; i++) {
-      if (matrix[i][column] > matrix[pivot][column]) {
+      if (abs(matrix[i][column]) > abs(matrix[pivot][column])) {
         pivot = i;
       }
     }

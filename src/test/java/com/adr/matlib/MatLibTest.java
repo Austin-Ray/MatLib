@@ -9,6 +9,38 @@ import java.util.Random;
 
 public class MatLibTest {
   @Test
+  public void backSubstitution() throws Exception {
+    double[] expected = {-9, -2, 5};
+
+    double[][] matrixA = {{1, 0, 2}, {2, -1, 3}, {4, 1, 8}};
+    double[][] matrixB = {{1}, {-1}, {2}};
+
+    double[][][] partitions = MatLib.gaussianElimination(matrixA, matrixB);
+
+    double[] actual = MatLib.backSubstitution(partitions);
+
+    for (int i = 0; i < actual.length; i++) {
+      System.out.println(actual[i]);
+    }
+
+    assertArrayEquals(expected, actual, 0.001);
+  }
+
+  @Test
+  public void gaussianElimination() throws Exception {
+    double[][] matrixA = {{1, 0, 2}, {2, -1, 3}, {4, 1, 8}};
+    double[][] matrixB = {{1}, {-1}, {2}};
+
+    double[][][] partitions = MatLib.gaussianElimination(matrixA, matrixB);
+
+    double[][] expectedArr = {{4, 1, 8}, { 0, -1.5, -1}, {0, 0, MatLib.roundDouble(1.0/6, 10)}};
+    double[][] expectedResults = {{2}, {-2}, {MatLib.roundDouble(5.0 / 6, 10)}};
+
+    assertArrayEquals(expectedArr, partitions[0]);
+    assertArrayEquals(expectedResults, partitions[1]);
+  }
+
+  @Test
   public void invertMatrix() throws Exception {
     double[][] matrixA = {{2, -1, 0}, {-1, 2, -1}, {0, -1, 2}};
     double[][][] partitions = MatLib.invertMatrix(matrixA);
