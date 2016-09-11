@@ -231,7 +231,7 @@ final class MatLib {
     return x;
   }
 
-  public static double calculateDeterminat(double[][] matrix) throws NonConformableMatrixException {
+  public static double calculateDeterminant(double[][] matrix) throws NonConformableMatrixException {
     int r = 0;
     double det;
 

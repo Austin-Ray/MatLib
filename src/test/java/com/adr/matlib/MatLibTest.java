@@ -9,9 +9,9 @@ import java.util.Random;
 
 public class MatLibTest {
   @Test
-  public void calculateDeterminat() throws Exception {
+  public void calculateDeterminant() throws Exception {
     double[][] matrix = {{1, 4, 0}, {0, 2, 6}, {-1, 0, 1}};
-    assertEquals(-22, MatLib.calculateDeterminat(matrix), 0.1);
+    assertEquals(-22, MatLib.calculateDeterminant(matrix), 0.1);
   }
 
   @Test
