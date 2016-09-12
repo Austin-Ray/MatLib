@@ -4,6 +4,37 @@ import com.adr.matlib.exception.NonConformableMatrixException;
 
 public final class MatLib {
 
+  public static double[][] multiplyMatrix(double[][] matrixA, double[][] matrixB)
+      throws NonConformableMatrixException {
+    if (matrixA.length != matrixB[0].length) {
+      throw new NonConformableMatrixException();
+    }
+
+    double[][] result = new double[matrixA.length][matrixB[0].length];
+
+    for(int i = 0; i < result.length; i++) {
+      result[i] = dotProduct(matrixA[i], matrixB);
+    }
+
+    return result;
+  }
+
+  public static double[] dotProduct(double[] a, double[][] b) {
+    double[] newMatrix = new double[b[0].length];
+
+   for(int i = 0; i < b[0].length; i++) {
+     double sum = 0;
+
+     for(int j = 0; j < a.length; j++) {
+       sum += a[j] * b[j][i];
+     }
+
+     newMatrix[i] = sum;
+   }
+
+    return newMatrix;
+  }
+
   /**
    * Absolute value of an integer value
    * @param n     number

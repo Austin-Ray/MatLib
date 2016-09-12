@@ -9,6 +9,18 @@ import java.util.Random;
 
 public class MatLibTest {
   @Test
+  public void multiplyMatrix() throws Exception {
+    double[][] matrixA = {{1, 2, 3},
+                          {4, 5, 6}};
+    double[][] matrixB = {{7, 8},
+                          {9, 10},
+                          {11, 12}};
+    double[][] expected = {{58, 64}, {139, 154}};
+
+    assertArrayEquals(expected, MatLib.multiplyMatrix(matrixA, matrixB));
+  }
+
+  @Test
   public void transposeMatrix() throws Exception {
     double[][] matrix = {{1, 2}};
     double[][] expected = {{1}, {2}};
