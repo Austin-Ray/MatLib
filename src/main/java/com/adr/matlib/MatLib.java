@@ -128,7 +128,7 @@ public final class MatLib {
    * @param matrix    Original matrix
    * @return          Scaled matrix
    */
-  public static double[][] multipleByScalar(int k, double[][] matrix) {
+  public static double[][] multipleByScalar(double k, double[][] matrix) {
     for(int i = 0; i < matrix.length; i++) {
       for(int j = 0; j < matrix[0].length; j++) {
         matrix[i][j] = k * matrix[i][j];
