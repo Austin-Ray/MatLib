@@ -389,4 +389,16 @@ public final class MatLib {
 
     return matrixC;
   }
+
+  public static double[][] transposeMatrix(double[][] matrix) {
+    double[][] temp = new double[matrix[0].length][matrix.length];
+
+   for(int i = 0; i < temp.length; i++) {
+     for(int j = 0; j < temp[i].length; j++) {
+       temp[i][j] = matrix[j][i];
+     }
+   }
+
+    return temp;
+  }
 }

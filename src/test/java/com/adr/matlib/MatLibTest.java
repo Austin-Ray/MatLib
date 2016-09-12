@@ -9,6 +9,14 @@ import java.util.Random;
 
 public class MatLibTest {
   @Test
+  public void transposeMatrix() throws Exception {
+    double[][] matrix = {{1, 2}};
+    double[][] expected = {{1}, {2}};
+
+    assertArrayEquals(expected, MatLib.transposeMatrix(matrix));
+  }
+
+  @Test
   public void calculateDeterminant() throws Exception {
     double[][] matrix = {{1, 4, 0}, {0, 2, 6}, {-1, 0, 1}};
     assertEquals(-22, MatLib.calculateDeterminant(matrix), 0.1);
