@@ -2,7 +2,7 @@ package com.adr.matlib;
 
 import com.adr.matlib.exception.NonConformableMatrixException;
 
-final class MatLib {
+public final class MatLib {
 
   /**
    * Absolute value of an integer value
