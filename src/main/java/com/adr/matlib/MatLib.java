@@ -131,7 +131,7 @@ public final class MatLib {
   public static double[][] multipleByScalar(double k, double[][] matrix) {
     for(int i = 0; i < matrix.length; i++) {
       for(int j = 0; j < matrix[0].length; j++) {
-        matrix[i][j] = k * matrix[i][j];
+        matrix[i][j] = roundDouble(k * matrix[i][j], 10);
       }
     }
 
