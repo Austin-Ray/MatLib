@@ -324,7 +324,7 @@ public final class MatLib {
 
       if (matrixC[p][i] == 0) {
         E = 0;
-        return partitionMatrix(matrixC, matrixC.length / 2 + 1);
+        return partitionMatrix(matrixC, matrixC.length / 2);
       }
 
       if(p > i) {
