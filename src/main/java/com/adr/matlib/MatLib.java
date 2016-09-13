@@ -131,7 +131,7 @@ public final class MatLib {
   public static double[][] multipleByScalar(double k, double[][] matrix) {
     for(int i = 0; i < matrix.length; i++) {
       for(int j = 0; j < matrix[0].length; j++) {
-        matrix[i][j] = roundDouble(k * matrix[i][j], 10);
+        matrix[i][j] = k * matrix[i][j];
       }
     }
 
@@ -186,7 +186,8 @@ public final class MatLib {
     for(int i = 0; i < matrixC.length; i++) {
       int p = computePivot(matrixC, i);
 
-      if (roundDouble(matrixC[p][i]) == 0) {
+      if (roundDouble(matrixC[p][i], 10) == 0) {
+        matrixC[p][i] = 0;
         E = 0;
         return partitionMatrix(matrixC, matrixC.length - 1);
       }
@@ -222,7 +223,7 @@ public final class MatLib {
       int p = computePivot(matrixC, j);
 
       // If matrixC[p][j] == 0, set E = 0 and exit
-      if (roundDouble(matrixC[p][j]) == 0) {
+      if (roundDouble(matrixC[p][j], 10) == 0) {
         E = 0;
         return partitionMatrix(matrixC, matrixC.length - 1);
       }
