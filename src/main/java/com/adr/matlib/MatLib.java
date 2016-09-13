@@ -26,10 +26,10 @@ public final class MatLib {
      double sum = 0;
 
      for(int j = 0; j < a.length; j++) {
-       sum += roundDouble(a[j] * b[j][i], 10);
+       sum += roundDouble(a[j] * b[j][i], 5);
      }
 
-     newMatrix[i] = sum;
+     newMatrix[i] = roundDouble(sum, 5);
    }
 
     return newMatrix;
