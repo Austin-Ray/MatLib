@@ -189,7 +189,7 @@ public final class MatLib {
       if (matrixC[p][i] == 0) {
         matrixC[p][i] = 0;
         E = 0;
-        return partitionMatrix(matrixC, matrixC.length - 1);
+        return partitionMatrix(matrixC, matrixC[0].length - 1);
       }
 
       if (p > i) {
@@ -205,7 +205,7 @@ public final class MatLib {
       }
     }
 
-    return partitionMatrix(matrixC, matrixC.length - 1);
+    return partitionMatrix(matrixC, matrixC[0].length - 1);
   }
 
   public static double[][][] gaussianElimination(double[][] matrixA, double[][] matrixB)
@@ -225,7 +225,7 @@ public final class MatLib {
       // If matrixC[p][j] == 0, set E = 0 and exit
       if (matrixC[p][j] == 0) {
         E = 0;
-        return partitionMatrix(matrixC, matrixC.length - 1);
+        return partitionMatrix(matrixC, matrixC[0].length - 1);
       }
 
       // If p > j, then swap rows p and j
@@ -242,7 +242,7 @@ public final class MatLib {
     }
 
     // Partition matrix as C = [D, e] where D is n x n and e is n X 1
-    return partitionMatrix(matrixC, matrixC.length - 1);
+    return partitionMatrix(matrixC, matrixC[0].length - 1);
   }
 
   public static double[] backSubstitution(double[][][] partition) {
@@ -324,7 +324,7 @@ public final class MatLib {
 
       if (matrixC[p][i] == 0) {
         E = 0;
-        return partitionMatrix(matrixC, matrixC.length / 2);
+        return partitionMatrix(matrixC, matrixC[0].length / 2);
       }
 
       if(p > i) {
@@ -340,22 +340,22 @@ public final class MatLib {
       }
     }
 
-    return partitionMatrix(matrixC, matrixC.length / 2 + 1);
+    return partitionMatrix(matrixC, matrixC[0].length / 2);
   }
 
   public static double[][][] partitionMatrix(double[][] matrix, int sizeOfFirstPart) {
-    double[][] part1 = new double[matrix.length][sizeOfFirstPart + 1];
-    double[][] part2 = new double[matrix.length][matrix[0].length - sizeOfFirstPart - 1];
+    double[][] part1 = new double[matrix.length][sizeOfFirstPart];
+    double[][] part2 = new double[matrix.length][matrix[0].length - sizeOfFirstPart];
 
-    for(int i = 0; i < part1.length; i++) {
-      for(int j = 0; j < part1[0].length; j++) {
+    for (int i = 0; i < part1.length; i++) {
+      for (int j = 0; j < part1[i].length; j++) {
         part1[i][j] = matrix[i][j];
       }
     }
 
-    for(int i = 0; i < part2.length; i++) {
-      for(int j = 0; j < part2[0].length; j++) {
-        part2[i][j] = matrix[i][j + sizeOfFirstPart + 1];
+    for (int i = 0; i < part2.length; i++) {
+      for (int j = 0; j < part2[i].length; j++) {
+        part2[i][j] = matrix[i][j + sizeOfFirstPart];
       }
     }
 
