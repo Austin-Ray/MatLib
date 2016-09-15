@@ -6,7 +6,7 @@ public final class MatLib {
 
   public static double[][] multiplyMatrix(double[][] matrixA, double[][] matrixB)
       throws NonConformableMatrixException {
-    if (matrixA.length != matrixB[0].length) {
+    if (matrixA[0].length != matrixB.length) {
       throw new NonConformableMatrixException();
     }
 
