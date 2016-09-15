@@ -186,9 +186,10 @@ public final class MatLib {
     for(int i = 0; i < matrixC.length; i++) {
       int p = computePivot(matrixC, i);
 
-      if (roundDouble(matrixC[p][i]) == 0) {
+      if (matrixC[p][i] == 0) {
+        matrixC[p][i] = 0;
         E = 0;
-        return partitionMatrix(matrixC, matrixC.length - 1);
+        return partitionMatrix(matrixC, matrixC[0].length - 1);
       }
 
       if (p > i) {
@@ -204,7 +205,7 @@ public final class MatLib {
       }
     }
 
-    return partitionMatrix(matrixC, matrixC.length - 1);
+    return partitionMatrix(matrixC, matrixC[0].length - 1);
   }
 
   public static double[][][] gaussianElimination(double[][] matrixA, double[][] matrixB)
@@ -222,9 +223,9 @@ public final class MatLib {
       int p = computePivot(matrixC, j);
 
       // If matrixC[p][j] == 0, set E = 0 and exit
-      if (roundDouble(matrixC[p][j]) == 0) {
+      if (matrixC[p][j] == 0) {
         E = 0;
-        return partitionMatrix(matrixC, matrixC.length - 1);
+        return partitionMatrix(matrixC, matrixC[0].length - 1);
       }
 
       // If p > j, then swap rows p and j
@@ -241,7 +242,7 @@ public final class MatLib {
     }
 
     // Partition matrix as C = [D, e] where D is n x n and e is n X 1
-    return partitionMatrix(matrixC, matrixC.length - 1);
+    return partitionMatrix(matrixC, matrixC[0].length - 1);
   }
 
   public static double[] backSubstitution(double[][][] partition) {
@@ -256,7 +257,7 @@ public final class MatLib {
         sum += (D[j][i] * x[i]);
       }
 
-      x[j] =  roundDouble((e[j][0] - sum) / D[j][j]);
+      x[j] =  (e[j][0] - sum) / D[j][j];
     }
 
     return x;
@@ -273,7 +274,7 @@ public final class MatLib {
     for(int j = 0; j < matrix.length; j++) {
       int p = computePivot(matrix, j);
 
-      if(roundDouble(matrix[p][j]) == 0) {
+      if(matrix[p][j] == 0) {
         det = 0;
         return det;
       }
@@ -321,9 +322,9 @@ public final class MatLib {
     for(int i = 0; i < matrixC.length; i++) {
       int p = computePivot(matrixC, i);
 
-      if (roundDouble(matrixC[p][i]) == 0) {
+      if (matrixC[p][i] == 0) {
         E = 0;
-        return partitionMatrix(matrixC, matrixC.length / 2 + 1);
+        return partitionMatrix(matrixC, matrixC[0].length / 2);
       }
 
       if(p > i) {
@@ -339,22 +340,22 @@ public final class MatLib {
       }
     }
 
-    return partitionMatrix(matrixC, matrixC.length / 2 + 1);
+    return partitionMatrix(matrixC, matrixC[0].length / 2);
   }
 
   public static double[][][] partitionMatrix(double[][] matrix, int sizeOfFirstPart) {
-    double[][] part1 = new double[matrix.length][sizeOfFirstPart + 1];
-    double[][] part2 = new double[matrix.length][matrix[0].length - sizeOfFirstPart - 1];
+    double[][] part1 = new double[matrix.length][sizeOfFirstPart];
+    double[][] part2 = new double[matrix.length][matrix[0].length - sizeOfFirstPart];
 
-    for(int i = 0; i < part1.length; i++) {
-      for(int j = 0; j < part1[0].length; j++) {
-        part1[i][j] = roundDouble(matrix[i][j], 10);
+    for (int i = 0; i < part1.length; i++) {
+      for (int j = 0; j < part1[i].length; j++) {
+        part1[i][j] = matrix[i][j];
       }
     }
 
-    for(int i = 0; i < part2.length; i++) {
-      for(int j = 0; j < part2[0].length; j++) {
-        part2[i][j] = roundDouble(matrix[i][j + sizeOfFirstPart + 1], 10);
+    for (int i = 0; i < part2.length; i++) {
+      for (int j = 0; j < part2[i].length; j++) {
+        part2[i][j] = matrix[i][j + sizeOfFirstPart];
       }
     }
 

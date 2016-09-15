@@ -64,12 +64,20 @@ public class MatLibTest {
     double[][] matrixB = {{1}, {-1}, {2}};
 
     double[][][] partitions = MatLib.gaussianElimination(matrixA, matrixB);
+    double[][] expectedArr = {{4, 1, 8}, { 0, -1.5, -1}, {0, 0, 1.0/6}};
+    double[][] expectedResults = {{2}, {-2}, {5.0 / 6}};
 
-    double[][] expectedArr = {{4, 1, 8}, { 0, -1.5, -1}, {0, 0, MatLib.roundDouble(1.0/6, 10)}};
-    double[][] expectedResults = {{2}, {-2}, {MatLib.roundDouble(5.0 / 6, 10)}};
+    for(int i = 0; i < expectedArr.length; i++) {
+      for(int j = 0; j < expectedArr[i].length; j++) {
+        assertEquals(expectedArr[i][j], partitions[0][i][j], 0.01);
+      }
+    }
 
-    assertArrayEquals(expectedArr, partitions[0]);
-    assertArrayEquals(expectedResults, partitions[1]);
+    for(int i = 0; i < expectedResults.length; i++) {
+      for (int j = 0; j < expectedResults[i].length; j++) {
+        assertEquals(expectedResults[i][j], partitions[1][i][j], 0.01);
+      }
+    }
   }
 
   @Test
@@ -78,9 +86,19 @@ public class MatLibTest {
     double[][][] partitions = MatLib.invertMatrix(matrixA);
 
     double[][] expected = {{3.0/4, 1.0/2, 1.0/4}, {1.0/2, 1.0, 1.0/2}, {1.0/4, 1.0/2, 3.0/4}};
+    double[][] expected2 = MatLib.generateIdentityMatrix(matrixA.length);
 
-    assertArrayEquals(MatLib.generateIdentityMatrix(matrixA.length), partitions[0]);
-    assertArrayEquals(expected, partitions[1]);
+    for (int i = 0; i < expected2.length; i++) {
+      for (int j = 0; j < expected2[i].length; j++) {
+        assertEquals(expected2[i][j], partitions[0][i][j], 0.01);
+      }
+    }
+
+    for (int i = 0; i < expected.length; i++) {
+      for (int j = 0; j < expected[i].length; j++) {
+        assertEquals(expected[i][j], partitions[1][i][j], 0.01);
+      }
+    }
   }
 
   @Test
@@ -108,23 +126,36 @@ public class MatLibTest {
 
   @Test
   public void gaussJordanElimination() throws Exception {
-    double[][] part1 = {{1, 3, 1},
-                        {1, 1, -1},
-                        {3, 11, 5}};
+    double[][] part1 = {{1, 1, 1},
+                        {2, 3, 5},
+                        {4, 0, 5}};
 
-    double[][] part2 = {{9},
-                        {1},
-                        {35}};
+    double[][] part2 = {{5},
+                        {8},
+                        {2}};
 
     double[][][] partitions = MatLib.gaussJordanElimination(part1, part2);
 
     double[][] resultPart1 = partitions[0];
     double[][] resultPart2 = partitions[1];
 
-    double[][] expected = {{1, 0, -2}, {0, 1, 1}, {0, 0, 0}};
+    double[][] expected = { {1, 0, 0},
+                            {0, 1, 0},
+                            {0, 0, 1}};
 
-    assertArrayEquals(expected, resultPart1);
-    assertArrayEquals(new double[][]{{-3}, {4}, {0}}, resultPart2);
+    double[][] expected2 = new double[][]{{3}, {4}, {-2}};
+
+    for(int i = 0; i < expected.length; i++) {
+      for (int j = 0; j < expected[i].length; j++) {
+        assertEquals(expected[i][j], resultPart1[i][j], 0.01);
+      }
+    }
+
+    for(int i = 0; i < expected2.length; i++) {
+      for (int j = 0; j < expected2[i].length; j++) {
+        assertEquals(expected2[i][j], resultPart2[i][j], 0.01);
+      }
+    }
   }
 
   @Test
