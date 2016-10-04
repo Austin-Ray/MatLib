@@ -129,7 +129,11 @@ public final class MatLib {
    * @return          Scaled matrix
    */
   public static double[][] multipleByScalar(double k, double[][] matrix) {
-    double[][] cloneMatrix = matrix.clone();
+    double[][] cloneMatrix = new double[matrix.length][matrix[0].length];
+
+    for (int i = 0; i < cloneMatrix.length; i++) {
+      System.arraycopy(matrix[i], 0, cloneMatrix[i], 0, cloneMatrix[i].length);
+    }
 
     for(int i = 0; i < matrix.length; i++) {
       for(int j = 0; j < matrix[0].length; j++) {
@@ -370,7 +374,11 @@ public final class MatLib {
   }
 
   public static double[][] subtractRow(double[][] matrix, int value, int from, double times) {
-    double[][] copy = matrix.clone();
+    double[][] copy = new double[matrix.length][matrix[0].length];
+
+    for (int i = 0; i < copy.length; i++) {
+      System.arraycopy(matrix[i], 0, copy[i], 0, copy[i].length);
+    }
 
     for(int i = 0; i < copy[0].length; i++) {
       copy[from][i] -= times * copy[value][i];
@@ -380,7 +388,11 @@ public final class MatLib {
   }
 
   public static double[][] divideRow(double[][] matrix, int row, double with) {
-    double[][] copy = matrix.clone();
+    double[][] copy = new double[matrix.length][matrix[0].length];
+
+    for (int i = 0; i < copy.length; i++) {
+      System.arraycopy(matrix[i], 0, copy[i], 0, copy[i].length);
+    }
 
     for(int i = 0; i < copy[row].length; i++) {
       copy[row][i] = copy[row][i] / with * 1.0;
@@ -390,7 +402,12 @@ public final class MatLib {
   }
 
   public static double[][] swapRow(double[][] matrix, int replace, int with) {
-    double[][] copy = matrix.clone();
+    double[][] copy = new double[matrix.length][matrix[0].length];
+
+
+    for (int i = 0; i < copy.length; i++) {
+      System.arraycopy(matrix[i], 0, copy[i], 0, copy[i].length);
+    }
 
     double[] temp = matrix[replace];
     copy[replace] = copy[with];
