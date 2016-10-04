@@ -30,6 +30,9 @@ public class MatLibTest {
 
   @Test
   public void calculateDeterminant() throws Exception {
+    double[][] matrix1 = {{3, 2},{5, 2}};
+    assertEquals(-4, MatLib.calculateDeterminant(matrix1), 0.1);
+
     double[][] matrix = {{1, 4, 0}, {0, 2, 6}, {-1, 0, 1}};
     assertEquals(-22, MatLib.calculateDeterminant(matrix), 0.1);
   }

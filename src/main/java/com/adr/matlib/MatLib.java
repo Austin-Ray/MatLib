@@ -282,6 +282,10 @@ public final class MatLib {
       throw new NonConformableMatrixException("Matrix not n x n");
     }
 
+    if(matrix.length == 2) {
+      return tempMatrix[0][0] * tempMatrix[1][1] - tempMatrix[0][1] * tempMatrix[1][0];
+    }
+
     for(int j = 0; j < tempMatrix.length; j++) {
       int p = computePivot(tempMatrix, j);
 
@@ -297,7 +301,7 @@ public final class MatLib {
 
       for (int i = 0; i < tempMatrix.length; i++) {
         if (i > j) {
-          subtractRow(tempMatrix, j, i, tempMatrix[i][j] / tempMatrix[j][j]);
+          tempMatrix = subtractRow(tempMatrix, j, i, tempMatrix[i][j] / tempMatrix[j][j]);
         }
       }
     }
