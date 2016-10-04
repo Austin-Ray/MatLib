@@ -268,7 +268,11 @@ public final class MatLib {
   public static double calculateDeterminant(double[][] matrix) throws NonConformableMatrixException {
     int r = 0;
     double det;
-    double[][] tempMatrix = matrix.clone();
+    double[][] tempMatrix = new double[matrix.length][matrix[0].length];
+
+    for (int i = 0; i < matrix.length; i++) {
+      System.arraycopy(matrix[i], 0, tempMatrix[i], 0, matrix[i].length);
+    }
 
     if (tempMatrix.length != tempMatrix[0].length) {
       throw new NonConformableMatrixException("Matrix not n x n");
@@ -351,15 +355,11 @@ public final class MatLib {
     double[][] part2 = new double[matrix.length][matrix[0].length - sizeOfFirstPart];
 
     for (int i = 0; i < part1.length; i++) {
-      for (int j = 0; j < part1[i].length; j++) {
-        part1[i][j] = matrix[i][j];
-      }
+      System.arraycopy(matrix[i], 0, part1[i], 0, part1[i].length);
     }
 
     for (int i = 0; i < part2.length; i++) {
-      for (int j = 0; j < part2[i].length; j++) {
-        part2[i][j] = matrix[i][j + sizeOfFirstPart];
-      }
+      System.arraycopy(matrix[i], 0 + sizeOfFirstPart, part2[i], 0, part2[i].length);
     }
 
     double[][][] parts = new double[2][][];
