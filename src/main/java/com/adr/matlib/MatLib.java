@@ -129,13 +129,15 @@ public final class MatLib {
    * @return          Scaled matrix
    */
   public static double[][] multipleByScalar(double k, double[][] matrix) {
+    double[][] cloneMatrix = matrix.clone();
+
     for(int i = 0; i < matrix.length; i++) {
       for(int j = 0; j < matrix[0].length; j++) {
-        matrix[i][j] = k * matrix[i][j];
+        cloneMatrix[i][j] = k * cloneMatrix[i][j];
       }
     }
 
-    return matrix;
+    return cloneMatrix;
   }
 
   public static double roundDouble(double d, int decimalPoint) {
