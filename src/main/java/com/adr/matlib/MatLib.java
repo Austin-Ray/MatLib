@@ -268,35 +268,36 @@ public final class MatLib {
   public static double calculateDeterminant(double[][] matrix) throws NonConformableMatrixException {
     int r = 0;
     double det;
+    double[][] tempMatrix = matrix.clone();
 
-    if (matrix.length != matrix[0].length) {
+    if (tempMatrix.length != tempMatrix[0].length) {
       throw new NonConformableMatrixException("Matrix not n x n");
     }
 
-    for(int j = 0; j < matrix.length; j++) {
-      int p = computePivot(matrix, j);
+    for(int j = 0; j < tempMatrix.length; j++) {
+      int p = computePivot(tempMatrix, j);
 
-      if(matrix[p][j] == 0) {
+      if(tempMatrix[p][j] == 0) {
         det = 0;
         return det;
       }
 
       if(p > j) {
-        matrix = swapRow(matrix, j, p);
+        tempMatrix = swapRow(tempMatrix, j, p);
         r += 1;
       }
 
-      for (int i = 0; i < matrix.length; i++) {
+      for (int i = 0; i < tempMatrix.length; i++) {
         if (i > j) {
-          subtractRow(matrix, j, i, matrix[i][j] / matrix[j][j]);
+          subtractRow(tempMatrix, j, i, tempMatrix[i][j] / tempMatrix[j][j]);
         }
       }
     }
 
     double sum = 1;
 
-    for(int i = 0; i < matrix.length; i++) {
-      sum *= matrix[i][i];
+    for(int i = 0; i < tempMatrix.length; i++) {
+      sum *= tempMatrix[i][i];
     }
 
     return toPower(-1, r) * sum;
