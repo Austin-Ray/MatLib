@@ -129,11 +129,7 @@ public final class MatLib {
    * @return          Scaled matrix
    */
   public static double[][] multipleByScalar(double k, double[][] matrix) {
-    double[][] cloneMatrix = new double[matrix.length][matrix[0].length];
-
-    for (int i = 0; i < cloneMatrix.length; i++) {
-      System.arraycopy(matrix[i], 0, cloneMatrix[i], 0, cloneMatrix[i].length);
-    }
+    double[][] cloneMatrix = copy2DMatrix(matrix);
 
     for(int i = 0; i < matrix.length; i++) {
       for(int j = 0; j < matrix[0].length; j++) {
@@ -272,11 +268,7 @@ public final class MatLib {
   public static double calculateDeterminant(double[][] matrix) throws NonConformableMatrixException {
     int r = 0;
     double det;
-    double[][] tempMatrix = new double[matrix.length][matrix[0].length];
-
-    for (int i = 0; i < matrix.length; i++) {
-      System.arraycopy(matrix[i], 0, tempMatrix[i], 0, matrix[i].length);
-    }
+    double[][] tempMatrix = copy2DMatrix(matrix);
 
     if (tempMatrix.length != tempMatrix[0].length) {
       throw new NonConformableMatrixException("Matrix not n x n");
@@ -378,11 +370,7 @@ public final class MatLib {
   }
 
   public static double[][] subtractRow(double[][] matrix, int value, int from, double times) {
-    double[][] copy = new double[matrix.length][matrix[0].length];
-
-    for (int i = 0; i < copy.length; i++) {
-      System.arraycopy(matrix[i], 0, copy[i], 0, copy[i].length);
-    }
+    double[][] copy = copy2DMatrix(matrix);
 
     for(int i = 0; i < copy[0].length; i++) {
       copy[from][i] -= times * copy[value][i];
@@ -392,11 +380,7 @@ public final class MatLib {
   }
 
   public static double[][] divideRow(double[][] matrix, int row, double with) {
-    double[][] copy = new double[matrix.length][matrix[0].length];
-
-    for (int i = 0; i < copy.length; i++) {
-      System.arraycopy(matrix[i], 0, copy[i], 0, copy[i].length);
-    }
+    double[][] copy = copy2DMatrix(matrix);
 
     for(int i = 0; i < copy[row].length; i++) {
       copy[row][i] = copy[row][i] / with * 1.0;
@@ -406,12 +390,7 @@ public final class MatLib {
   }
 
   public static double[][] swapRow(double[][] matrix, int replace, int with) {
-    double[][] copy = new double[matrix.length][matrix[0].length];
-
-
-    for (int i = 0; i < copy.length; i++) {
-      System.arraycopy(matrix[i], 0, copy[i], 0, copy[i].length);
-    }
+    double[][] copy = copy2DMatrix(matrix);
 
     double[] temp = matrix[replace];
     copy[replace] = copy[with];
@@ -456,5 +435,35 @@ public final class MatLib {
    }
 
     return temp;
+  }
+
+  public static double traceMatrix(double[][] matrix) throws NonConformableMatrixException{
+    if(matrix.length != matrix[0].length) {
+      throw new NonConformableMatrixException("Not NxN");
+    }
+
+    double sum = 0;
+
+    for(int i = 0; i < matrix.length; i++) {
+      sum += matrix[i][i];
+    }
+
+    return sum;
+  }
+
+  public static double[][] eigenDirectMethod(double[][] matrix) {
+    double[][] tempMatrix = copy2DMatrix(matrix);
+
+    return tempMatrix;
+  }
+
+  private static double[][] copy2DMatrix(double[][] matrix) {
+    double[][] tempMatrix = new double[matrix.length][matrix[0].length];
+
+    for (int i = 0; i < tempMatrix.length; i++) {
+      System.arraycopy(matrix[i], 0, tempMatrix[i], 0, tempMatrix[i].length);
+    }
+
+    return tempMatrix;
   }
 }
