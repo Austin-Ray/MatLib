@@ -451,10 +451,46 @@ public final class MatLib {
     return sum;
   }
 
-  public static double[][] eigenDirectMethod(double[][] matrix) {
+  public static double[][] eigenPowerMethod(double[][] matrix, double[][] initialVector) throws NonConformableMatrixException {
     double[][] tempMatrix = copy2DMatrix(matrix);
 
-    return tempMatrix;
+    double e = 1;
+    double m = 1;
+    double[][] y = copy2DMatrix(initialVector);
+    double[][] eigenVector;
+    double[][] r;
+    double k = 0;
+
+    double[][] x = multiplyMatrix(tempMatrix, y);
+
+    do {
+      y = multipleByScalar(calculateDeterminant(x), x);
+      x = multiplyMatrix(tempMatrix, y);
+      double[][] yTranpose = transposeMatrix(y);
+      eigenVector = multiplyMatrix(yTranpose, x);
+      eigenVector = multiplyMatrix(eigenVector, invertMatrix(multiplyMatrix(yTranpose, y))[1]);
+      r = subtractMatrix(multiplyMatrix(eigenVector, y), x);
+      k++;
+    }
+    while (calculateDeterminant(r) > e && (k < m));
+
+    return eigenVector;
+  }
+
+  public static double[] leverrierMethod(double[][] matrix) throws NonConformableMatrixException {
+    double[][] tempMatrix = copy2DMatrix(matrix);
+    double[] coeffOfA = new double[tempMatrix.length];
+    double[][] I = generateIdentityMatrix(tempMatrix.length);
+
+    double[][] bOfN = tempMatrix;
+    coeffOfA[tempMatrix.length - 1] = traceMatrix(bOfN);
+
+    for(int k = tempMatrix.length - 1; k >= 0; k--) {
+      bOfN = multiplyMatrix(tempMatrix, addMatrix(bOfN, multipleByScalar(coeffOfA[k+1], I)));
+      coeffOfA[k] = -1 * traceMatrix(bOfN) / (tempMatrix.length - k + 1);
+    }
+
+    return coeffOfA;
   }
 
   private static double[][] copy2DMatrix(double[][] matrix) {
@@ -465,5 +501,47 @@ public final class MatLib {
     }
 
     return tempMatrix;
+  }
+
+  public static double[][] findCovarianceMatrix(Vector[] classVectors, Vector mean, double scalar) {
+    Vector[] tempVector = classVectors.clone();
+
+    double[][] subMat;
+    double[][] sumMatrix = new double[2][2];
+
+    for(int i = 0; i < tempVector.length; i++) {
+      try {
+        double[][] v1 = MatLib.subtractMatrix(classVectors[i].matrix(), mean.matrix());
+        double[][] transposeResult = MatLib.multiplyMatrix(v1, MatLib.transposeMatrix(v1));
+        sumMatrix = MatLib.addMatrix(sumMatrix, transposeResult);
+      } catch (NonConformableMatrixException e) {
+        e.printStackTrace();
+      }
+    }
+
+    sumMatrix = MatLib.multipleByScalar(scalar, sumMatrix);
+
+    return sumMatrix;
+  }
+
+  public static double matrixNorm(double[][] matrix) {
+    double[][] tempMatrix = matrix.clone();
+    double[] columnValues = new double[matrix[0].length];
+
+    for (int i = 0; i < tempMatrix.length; i++) {
+      for (int j = 0; j < tempMatrix[i].length; j++) {
+        columnValues[j] += tempMatrix[i][j];
+      }
+    }
+
+    double max = Double.MIN_VALUE;
+
+    for (int i = 0; i < columnValues.length; i++) {
+      if(columnValues[i] > max) {
+        max = columnValues[i];
+      }
+    }
+
+    return max;
   }
 }
