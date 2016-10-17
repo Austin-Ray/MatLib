@@ -4,6 +4,13 @@ import com.adr.matlib.exception.NonConformableMatrixException;
 
 public final class MatLib {
 
+  /**
+   * Multiple two matrices
+   * @param matrixA                           Matrix A
+   * @param matrixB                           Matrix B
+   * @return                                  Product of AB
+   * @throws NonConformableMatrixException    Invalid matrix sizes
+   */
   public static double[][] multiplyMatrix(double[][] matrixA, double[][] matrixB)
       throws NonConformableMatrixException {
     if (matrixA[0].length != matrixB.length) {
@@ -425,6 +432,11 @@ public final class MatLib {
     return matrixC;
   }
 
+  /**
+   * Transpose a matrix
+   * @param matrix    Matrix being transposed
+   * @return          Transpose of matrix
+   */
   public static double[][] transposeMatrix(double[][] matrix) {
     double[][] temp = new double[matrix[0].length][matrix.length];
 
@@ -493,16 +505,6 @@ public final class MatLib {
     return coeffOfA;
   }
 
-  private static double[][] copy2DMatrix(double[][] matrix) {
-    double[][] tempMatrix = new double[matrix.length][matrix[0].length];
-
-    for (int i = 0; i < tempMatrix.length; i++) {
-      System.arraycopy(matrix[i], 0, tempMatrix[i], 0, tempMatrix[i].length);
-    }
-
-    return tempMatrix;
-  }
-
   public static double[][] findCovarianceMatrix(Vector[] classVectors, Vector mean, double scalar) {
     Vector[] tempVector = classVectors.clone();
 
@@ -524,13 +526,18 @@ public final class MatLib {
     return sumMatrix;
   }
 
+  /**
+   * Finds the L1 norm of a matrix
+   * @param matrix    Matrix
+   * @return          L1 norm of matrix
+   */
   public static double matrixNorm(double[][] matrix) {
     double[][] tempMatrix = matrix.clone();
     double[] columnValues = new double[matrix[0].length];
 
     for (int i = 0; i < tempMatrix.length; i++) {
       for (int j = 0; j < tempMatrix[i].length; j++) {
-        columnValues[j] += tempMatrix[i][j];
+        columnValues[j] += Math.abs(tempMatrix[i][j]);
       }
     }
 
@@ -543,5 +550,20 @@ public final class MatLib {
     }
 
     return max;
+  }
+
+  /**
+   * Manual copy of a matrix
+   * @param matrix    Matrix being copied
+   * @return          Duplicate matrix
+   */
+  private static double[][] copy2DMatrix(double[][] matrix) {
+    double[][] tempMatrix = new double[matrix.length][matrix[0].length];
+
+    for (int i = 0; i < tempMatrix.length; i++) {
+      System.arraycopy(matrix[i], 0, tempMatrix[i], 0, tempMatrix[i].length);
+    }
+
+    return tempMatrix;
   }
 }

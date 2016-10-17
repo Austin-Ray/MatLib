@@ -9,6 +9,21 @@ import java.util.Random;
 
 public class MatLibTest {
   @Test
+  public void matrixNorm() throws Exception {
+    double[][] matrix = {{1, -7}, {-2, -3}};
+    double[][] matrix2 = {{5, -4, 2}, {-1, 2, 3}, {-2, 1, 0}};
+    double[][] matrix3 = {{1},{2}, {3}};
+
+    double expected = 10;
+    double expected2 = 8;
+    double expected3 = 6;
+
+    assertEquals(expected, MatLib.matrixNorm(matrix), 0.001);
+    assertEquals(expected2, MatLib.matrixNorm(matrix2), 0.001);
+    assertEquals(expected3, MatLib.matrixNorm(matrix3), 0.001);
+  }
+
+  @Test
   public void multiplyMatrix() throws Exception {
     double[][] matrixA = {{1, 2, 3},
                           {4, 5, 6}};
@@ -53,10 +68,6 @@ public class MatLibTest {
     double[][][] partitions = MatLib.gaussianElimination(matrixA, matrixB);
 
     double[] actual = MatLib.backSubstitution(partitions);
-
-    for (int i = 0; i < actual.length; i++) {
-      System.out.println(actual[i]);
-    }
 
     assertArrayEquals(expected, actual, 0.001);
   }
