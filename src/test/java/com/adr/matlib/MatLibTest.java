@@ -32,7 +32,7 @@ public class MatLibTest {
     double[] expected = {3, -2};
     double[] result = MatLib.jacobisMethod(matrixA);
 
-    //checkArray(expected, result, 0.001);
+    checkArray(expected, result, 0.001);
   }
 
   @Test
@@ -84,14 +84,20 @@ public class MatLibTest {
 
   @Test
   public void multiplyMatrix() throws Exception {
-    double[][] matrixA = {{1, 2, 3},
-                          {4, 5, 6}};
-    double[][] matrixB = {{7, 8},
-                          {9, 10},
-                          {11, 12}};
+    double[][] matrixA = {{1, 2, 3}, {4, 5, 6}};
+    double[][] matrixB = {{7, 8}, {9, 10}, {11, 12}};
     double[][] expected = {{58, 64}, {139, 154}};
 
+    double[][] matrixA2 = {{1}};
+    double[][] matrixB2 = {{2, 2},{2,2}};
+
     check2dArray(expected, MatLib.multiplyMatrix(matrixA, matrixB), 0.0001);
+
+    try {
+      check2dArray(expected, MatLib.multiplyMatrix(matrixA2, matrixB2), 0.0001);
+    } catch (NonConformableMatrixException e) {
+      // Do nothing. It's suppose to break.
+    }
   }
 
   @Test
@@ -142,6 +148,17 @@ public class MatLibTest {
 
     check2dArray(expectedArr, partitions[0], 0.01);
     check2dArray(expectedResults, partitions[1], 0.01);
+
+    double[][] part22 = {{2, 4, 3, 4, 6}};
+    double[][] emptyPart = new double[2][2];
+    double[][] emptyPart2 = new double[2][1];
+    MatLib.gaussJordanElimination(emptyPart, emptyPart2);
+
+    try {
+      MatLib.gaussJordanElimination(matrixA, part22);
+    } catch (NonConformableMatrixException e) {
+      // Do nothing. Suppose to break.
+    }
   }
 
   @Test
@@ -181,27 +198,29 @@ public class MatLibTest {
 
   @Test
   public void gaussJordanElimination() throws Exception {
-    double[][] part1 = {{1, 1, 1},
-                        {2, 3, 5},
-                        {4, 0, 5}};
-
-    double[][] part2 = {{5},
-                        {8},
-                        {2}};
-
+    double[][] part1 = {{1, 1, 1}, {2, 3, 5}, {4, 0, 5}};
+    double[][] part2 = {{5}, {8}, {2}};
     double[][][] partitions = MatLib.gaussJordanElimination(part1, part2);
 
     double[][] resultPart1 = partitions[0];
     double[][] resultPart2 = partitions[1];
 
-    double[][] expected = { {1, 0, 0},
-                            {0, 1, 0},
-                            {0, 0, 1}};
-
+    double[][] expected = { {1, 0, 0}, {0, 1, 0}, {0, 0, 1}};
     double[][] expected2 = new double[][]{{3}, {4}, {-2}};
 
     check2dArray(expected, resultPart1, 0.01);
     check2dArray(expected2, resultPart2, 0.01);
+
+    double[][] part22 = {{2, 4}};
+    double[][] emptyPart = new double[2][2];
+    double[][] emptyPart2 = new double[2][1];
+    MatLib.gaussJordanElimination(emptyPart, emptyPart2);
+
+    try {
+      MatLib.gaussJordanElimination(part1, part22);
+    } catch (NonConformableMatrixException e) {
+      // Do nothing. Suppose to break.
+    }
   }
 
   @Test

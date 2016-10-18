@@ -551,7 +551,7 @@ public final class MatLib {
     double[] lambdas = new double[A.length];
     double e = 0.0001;
 
-    while(calculateDeterminant(A) > e) {
+    while(Math.abs(A[p][q]) > e) {
       double phi = (1.0 / 2.0) * Math.atan((2 * A[p][q]) / (A[p][p] - A[q][q]));
       double[][] R = generateIdentityMatrix(A.length);
 
