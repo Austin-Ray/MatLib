@@ -466,8 +466,8 @@ public final class MatLib {
   public static double[][] eigenPowerMethod(double[][] matrix, double[][] initialVector) throws NonConformableMatrixException {
     double[][] tempMatrix = copy2DMatrix(matrix);
 
-    double e = 1;
-    double m = 1;
+    double e = 0.001;
+    double m = 0.001;
     double[][] y = copy2DMatrix(initialVector);
     double[][] eigenVector;
     double[][] r;
@@ -476,7 +476,7 @@ public final class MatLib {
     double[][] x = multiplyMatrix(tempMatrix, y);
 
     do {
-      y = multipleByScalar(calculateDeterminant(x), x);
+      y = multipleByScalar(matrixNorm(x), x);
       x = multiplyMatrix(tempMatrix, y);
       double[][] yTranpose = transposeMatrix(y);
       eigenVector = multiplyMatrix(yTranpose, x);
@@ -489,17 +489,40 @@ public final class MatLib {
     return eigenVector;
   }
 
-  public static double[] leverrierMethod(double[][] matrix) throws NonConformableMatrixException {
+  public static double[] leverriersMethod(double[][] matrix) throws NonConformableMatrixException {
+    int n = matrix.length - 1;
+
+    // Matrix A
     double[][] tempMatrix = copy2DMatrix(matrix);
+
+    // Create empty array for coefficients and B
     double[] coeffOfA = new double[tempMatrix.length];
-    double[][] I = generateIdentityMatrix(tempMatrix.length);
+    double[][][] bOfN = new double[tempMatrix.length][][];
 
-    double[][] bOfN = tempMatrix;
-    coeffOfA[tempMatrix.length - 1] = traceMatrix(bOfN);
+    // Bn = A, where n is the length.
+    bOfN[n] = copy2DMatrix(tempMatrix);
 
-    for(int k = tempMatrix.length - 1; k >= 0; k--) {
-      bOfN = multiplyMatrix(tempMatrix, addMatrix(bOfN, multipleByScalar(coeffOfA[k+1], I)));
-      coeffOfA[k] = -1 * traceMatrix(bOfN) / (tempMatrix.length - k + 1);
+    // An = -trace(Bn)
+    coeffOfA[n] = -1 * traceMatrix(bOfN[n]);
+
+    for(int k = n - 1; k >= 0; k--) {
+      // Get B(k+1)
+      double[][] bOfK1 = copy2DMatrix(bOfN[k+1]);
+
+      // Get a(k+1) and multiply the identity matrix
+      double[][] aOfK1I = multipleByScalar(coeffOfA[k+1], generateIdentityMatrix(n + 1));
+
+      // Add B(k+1) and the result of a(k+1) * I
+      double[][] bOfK1PlusAOfK1I = addMatrix(bOfK1, aOfK1I);
+
+      // A * (B(k+1) + a(k+1)*I)
+      bOfN[k] = multiplyMatrix(tempMatrix, bOfK1PlusAOfK1I);
+
+      double traceOfBk =  traceMatrix(bOfN[k]);
+      double negateTraceOfBk = -1 * traceOfBk;
+      double denominator = n - k + 1.0;
+
+      coeffOfA[k] = negateTraceOfBk / denominator;
     }
 
     return coeffOfA;
@@ -565,5 +588,26 @@ public final class MatLib {
     }
 
     return tempMatrix;
+  }
+
+  public static double[][] normalizeVector(Vector u) {
+    double[][] uHat = multipleByScalar(1.0 / vectorNorm(u.matrix()), u.matrix());
+
+    return uHat;
+  }
+
+  /**
+   * Euclidean norm for a vector
+   * @param vector    Vector in matrix form
+   * @return          Euclidean norm
+   */
+  public static double vectorNorm(double[][] vector) {
+    double sum = 0.0;
+
+    for(int i = 0; i < vector.length; i++) {
+      sum += Math.pow(Math.abs(vector[i][0]), 2);
+    }
+    System.out.println(sum);
+    return Math.sqrt(sum);
   }
 }

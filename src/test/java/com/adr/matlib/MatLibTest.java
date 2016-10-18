@@ -9,6 +9,39 @@ import java.util.Random;
 
 public class MatLibTest {
   @Test
+  public void normalizeVector() throws Exception {
+    Vector vector = new Vector(8.0, -6.0);
+
+    double[][] expected = {{4.0/5.0}, {-3.0/5.0}};
+    double[][] result = MatLib.normalizeVector(vector);
+
+    for (int i = 0; i < expected.length; i++) {
+      for (int j = 0; j < expected[i].length; j++) {
+        assertEquals(expected[i][j], result[i][j], 0.0001);
+      }
+    }
+  }
+
+  @Test
+  public void traceMatrix() throws Exception {
+    double[][] matrixA = {{1,1,1}, {1,1,1}, {1,1,1}};
+    double expected = 3;
+
+    assertEquals(expected, MatLib.traceMatrix(matrixA), 0.001);
+  }
+
+  @Test
+  public void leverriersMethod() throws Exception {
+    double[][] matrixA ={{2, -1, 1}, {-1, 2, 1}, {1, -1, 2}};
+    double[] expected = {-6, 11, -6};
+    double[] result = MatLib.leverriersMethod(matrixA);
+
+    for (int i = 0; i < expected.length; i++) {
+      assertEquals(expected[i], result[i], 0.0001);
+    }
+  }
+
+  @Test
   public void matrixNorm() throws Exception {
     double[][] matrix = {{1, -7}, {-2, -3}};
     double[][] matrix2 = {{5, -4, 2}, {-1, 2, 3}, {-2, 1, 0}};
