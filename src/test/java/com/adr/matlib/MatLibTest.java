@@ -249,63 +249,6 @@ public class MatLibTest {
   }
 
   @Test
-  public void abs() throws Exception {
-    int i = Integer.MAX_VALUE;
-    int j = Integer.MIN_VALUE;
-
-    // Overflows because the min value has a larger
-    // absolute value than the max value of a int
-    assertEquals(Integer.MAX_VALUE, MatLib.abs(i));
-    //noinspection NumericOverflow
-    assertEquals(Integer.MAX_VALUE + 1, MatLib.abs(j));
-    new Random().ints(1000).forEach(e -> assertEquals(Math.abs(e), MatLib.abs(e)));
-  }
-
-  @Test
-  public void abs1() throws Exception {
-    long i = Long.MAX_VALUE;
-    long j = Long.MIN_VALUE;
-
-    assertEquals(Long.MAX_VALUE, MatLib.abs(i));
-
-    // Overflows because the min value has a larger
-    // absolute value than the max value of a long
-    //noinspection NumericOverflow
-    assertEquals(Long.MAX_VALUE + 1, MatLib.abs(j));
-
-    // Random doubles
-    new Random().longs(1000).forEach(e -> assertEquals(Math.abs(e), MatLib.abs(e)));
-  }
-
-  @Test
-  public void abs2() throws Exception {
-    float i = Float.MAX_VALUE;
-    float j = Float.MIN_VALUE;
-
-    assertEquals(Float.MAX_VALUE, MatLib.abs(i), 0.0001);
-    assertEquals(Float.MIN_VALUE, MatLib.abs(j), 0.0001);
-
-    for(int l = 0; l < 1000; l++) {
-      float n = new Random().nextFloat() * 2 - 1;
-      assertEquals(Math.abs(n), MatLib.abs(n), 0.0001);
-    }
-  }
-
-  @Test
-  public void abs3() throws Exception {
-    double i = Double.MAX_VALUE;
-    double j = Double.MIN_VALUE;
-
-    assertEquals(Double.MAX_VALUE, MatLib.abs(i), 0.0001);
-    assertEquals(Double.MIN_VALUE, MatLib.abs(j), 0.0001);
-
-    new Random().doubles(1000).forEach(e -> {
-      e = 2 * e - 1;
-      assertEquals(Math.abs(e), MatLib.abs(e), 0.0001);
-    });
-  }
-
-  @Test
   public void multipleByScalar() throws Exception {
     double[][] twoNGen = MatLib.generateIdentityMatrix(2);
     double[][] fourNGen = MatLib.generateIdentityMatrix(4);

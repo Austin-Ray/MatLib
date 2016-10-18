@@ -43,42 +43,6 @@ public final class MatLib {
   }
 
   /**
-   * Absolute value of an integer value
-   * @param n     number
-   * @return      Absolute value of a number
-   */
-  public static int abs(int n) {
-    return n > 0 ? n : -n;
-  }
-
-  /**
-   * Absolute value of a long number
-   * @param n     number
-   * @return      absolute value of number
-   */
-  public static long abs(long n) {
-    return n > 0L ? n : n * -1;
-  }
-
-  /**
-   * Absolute value of a floating point value with single precision
-   * @param n     number
-   * @return      Absolute value of number
-   */
-  public static float abs(float n) {
-    return n >= 0.0F ? n : 0.0F - n;
-  }
-
-  /**
-   * Absolute value of a floating point value with double precision
-   * @param n     number
-   * @return      absolute value of number
-   */
-  public static double abs(double n) {
-    return n >= 0.0D ? n : 0.0D - n;
-  }
-
-  /**
    * Adds two matrices and returns the result
    * @param matrixA                             First matrix
    * @param matrixB                             Second matrix
@@ -145,42 +109,6 @@ public final class MatLib {
     }
 
     return cloneMatrix;
-  }
-
-  public static double roundDouble(double d, int decimalPoint) {
-    double p = 1;
-    for(int i = 0; i < decimalPoint; i++) {
-      p = roundDouble(p * 10);
-    }
-
-    return roundDouble(d * p) / p;
-  }
-
-  /**
-   * Implementation of OpenJDK's round method for double precision numbers
-   * @param d     Numbers being rounded
-   * @return      Value of the argument rounded to the nearest long value
-   */
-  public static double roundDouble(double d) {
-    // Double precision width
-    int precisionWidth = 53;
-    // 2^10 - 1
-    int precisionBias = 1023;
-    long signIfBitMask = 4503599627370495L;
-
-    long rawLongBits = Double.doubleToRawLongBits(d);
-    long biasedExp = (rawLongBits & Long.MAX_VALUE) >> precisionWidth - 1;
-    long shift = (precisionWidth - 2 + precisionBias) - biasedExp;
-    if((shift & -64L) == 0L) {
-      long r = rawLongBits &  signIfBitMask | signIfBitMask + 1;
-      if(rawLongBits < 0L) {
-        r = -r;
-      }
-
-      return (r >> (int)shift) + 1L >> 1L;
-    } else {
-      return (long) d;
-    }
   }
 
   public static double[][][] gaussJordanElimination(double[][] matrixA, double[][] matrixB)
@@ -317,7 +245,7 @@ public final class MatLib {
   public static double toPower(double number, int power) {
     double newNumber = 1.0;
     if(power < 0) {
-      for(int i = abs(power); i > 0; i--) {
+      for(int i = Math.abs(power); i > 0; i--) {
         newNumber = newNumber / number;
       }
     } else {
@@ -366,7 +294,7 @@ public final class MatLib {
     }
 
     for (int i = 0; i < part2.length; i++) {
-      System.arraycopy(matrix[i], 0 + sizeOfFirstPart, part2[i], 0, part2[i].length);
+      System.arraycopy(matrix[i], sizeOfFirstPart, part2[i], 0, part2[i].length);
     }
 
     double[][][] parts = new double[2][][];
@@ -410,7 +338,7 @@ public final class MatLib {
     int pivot = column;
 
     for(int i = column; i < matrix.length; i++) {
-      if (abs(matrix[i][column]) > abs(matrix[pivot][column])) {
+      if (Math.abs(matrix[i][column]) > Math.abs(matrix[pivot][column])) {
         pivot = i;
       }
     }
@@ -478,9 +406,9 @@ public final class MatLib {
     do {
       y = multipleByScalar(matrixNorm(x), x);
       x = multiplyMatrix(tempMatrix, y);
-      double[][] yTranpose = transposeMatrix(y);
-      eigenVector = multiplyMatrix(yTranpose, x);
-      eigenVector = multiplyMatrix(eigenVector, invertMatrix(multiplyMatrix(yTranpose, y))[1]);
+      double[][] yTranspose = transposeMatrix(y);
+      eigenVector = multiplyMatrix(yTranspose, x);
+      eigenVector = multiplyMatrix(eigenVector, invertMatrix(multiplyMatrix(yTranspose, y))[1]);
       r = subtractMatrix(multiplyMatrix(eigenVector, y), x);
       k++;
     }
@@ -558,17 +486,17 @@ public final class MatLib {
     double[][] tempMatrix = matrix.clone();
     double[] columnValues = new double[matrix[0].length];
 
-    for (int i = 0; i < tempMatrix.length; i++) {
-      for (int j = 0; j < tempMatrix[i].length; j++) {
-        columnValues[j] += Math.abs(tempMatrix[i][j]);
+    for (double[] aTempMatrix : tempMatrix) {
+      for (int j = 0; j < aTempMatrix.length; j++) {
+        columnValues[j] += Math.abs(aTempMatrix[j]);
       }
     }
 
     double max = Double.MIN_VALUE;
 
-    for (int i = 0; i < columnValues.length; i++) {
-      if(columnValues[i] > max) {
-        max = columnValues[i];
+    for (double columnValue : columnValues) {
+      if (columnValue > max) {
+        max = columnValue;
       }
     }
 
@@ -591,9 +519,7 @@ public final class MatLib {
   }
 
   public static double[][] normalizeVector(Vector u) {
-    double[][] uHat = multipleByScalar(1.0 / vectorNorm(u.matrix()), u.matrix());
-
-    return uHat;
+    return multipleByScalar(1.0 / vectorNorm(u.matrix()), u.matrix());
   }
 
   /**
@@ -604,9 +530,10 @@ public final class MatLib {
   public static double vectorNorm(double[][] vector) {
     double sum = 0.0;
 
-    for(int i = 0; i < vector.length; i++) {
-      sum += Math.pow(Math.abs(vector[i][0]), 2);
+    for (double[] aVector : vector) {
+      sum += Math.pow(Math.abs(aVector[0]), 2);
     }
+
     System.out.println(sum);
     return Math.sqrt(sum);
   }
