@@ -9,6 +9,31 @@ import java.util.Random;
 
 public class MatLibTest {
   @Test
+  public void findCovarianceMatrix() throws Exception {
+    Vector[] vectors = new Vector[5];
+    vectors[0] = new Vector(65.21, 67.25);
+    vectors[1] = new Vector(64.75, 66.39);
+    vectors[2] = new Vector(65.26, 66.12);
+    vectors[3] = new Vector(65.76, 65.70);
+    vectors[4] = new Vector(65.96, 66.64);
+
+    double x = 0;
+    double y = 0;
+
+    for (Vector vector : vectors) {
+      x += vector.getX();
+      y += vector.getY();
+    }
+
+    Vector mean = new Vector(x / vectors.length, y / vectors.length);
+
+    double[][] expected = {{}};
+    double[][] result = MatLib.findCovarianceMatrix(vectors, mean, 1.0 / vectors.length);
+
+    check2dArray(expected, result, 0.001);
+  }
+
+  @Test
   public void highestMagnitudeCoordinate() throws Exception {
     double[][] matrixA = {{-1, 2}, {2, 2}};
     int[] expected = {0, 1};
