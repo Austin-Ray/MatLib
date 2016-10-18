@@ -534,7 +534,78 @@ public final class MatLib {
       sum += Math.pow(Math.abs(aVector[0]), 2);
     }
 
-    System.out.println(sum);
     return Math.sqrt(sum);
+  }
+
+  public static double[] jacobisMethod(double[][] matrixA) throws NonConformableMatrixException {
+    if(matrixA.length != matrixA[0].length) {
+      throw new NonConformableMatrixException("Not NxN");
+    }
+
+    int[] coords = highestMagnitudeCoordinate(matrixA);
+    int p = coords[0];
+    int q = coords[1];
+
+    double[][] A = copy2DMatrix(matrixA);
+    double[][] P = generateIdentityMatrix(matrixA.length);
+    double[] lambdas = new double[A.length];
+    double e = 0.0001;
+
+    while(calculateDeterminant(A) > e) {
+      double phi = (1.0 / 2.0) * Math.atan((2 * A[p][q]) / (A[p][p] - A[q][q]));
+      double[][] R = generateIdentityMatrix(A.length);
+
+      // R(pp) = R(qq) = cos(phi)
+      R[q][q] = Math.cos(phi);
+      R[p][p] = R[q][q];
+
+      // R(pq) = -R(qp) = -sin(phi)
+      R[q][p] = -Math.sin(phi);
+      R[p][q] = -R[q][p];
+
+      P = multiplyMatrix(P, R);
+
+      double[][] rTransponse = transposeMatrix(R);
+      double[][] rTranposeA = multiplyMatrix(rTransponse, A);
+      A = multiplyMatrix(rTranposeA, R);
+
+    }
+
+    for(int k = 0; k < lambdas.length; k++) {
+      lambdas[k] = A[k][k];
+    }
+
+    return lambdas;
+  }
+
+  public static int[] highestMagnitudeCoordinate(double[][] matrix) {
+    int[] coords = new int[2];
+    double max = Double.MIN_VALUE;
+
+    for(int row = 0; row < matrix.length; row++) {
+      int maxColumnCoord = scanColumn(matrix, row);
+
+      if(Math.abs(matrix[row][maxColumnCoord]) > max) {
+        max = Math.abs(matrix[row][maxColumnCoord]);
+        coords[0] = row;
+        coords[1] = maxColumnCoord;
+      }
+    }
+
+    return coords;
+  }
+
+  public static int scanColumn(double[][] matrix, int column) {
+    double maxValue = Double.MIN_VALUE;
+    int maxColumn = 0;
+
+    for (int i = 0; i < matrix.length; i++) {
+      if(Math.abs(matrix[i][column]) > maxValue) {
+        maxValue = Math.abs(matrix[i][column]);
+        maxColumn = i;
+      }
+    }
+
+    return maxColumn;
   }
 }

@@ -9,17 +9,40 @@ import java.util.Random;
 
 public class MatLibTest {
   @Test
+  public void highestMagnitudeCoordinate() throws Exception {
+    double[][] matrixA = {{-1, 2}, {2, 2}};
+    int[] expected = {0, 1};
+    int[] result = MatLib.highestMagnitudeCoordinate(matrixA);
+
+    checkArray(expected, result);
+  }
+
+  @Test
+  public void scanColumn() throws Exception {
+    double[][] matrix = {{1, 0}, {0, 1}};
+    int expected1 = 0;
+
+    assertEquals(expected1, MatLib.scanColumn(matrix, 0));
+  }
+
+  @Test
+  public void jacobisMethod() throws Exception {
+    double[][] matrixA = {{-1, 2},
+                          {2, 2}};
+    double[] expected = {3, -2};
+    double[] result = MatLib.jacobisMethod(matrixA);
+
+    //checkArray(expected, result, 0.001);
+  }
+
+  @Test
   public void normalizeVector() throws Exception {
     Vector vector = new Vector(8.0, -6.0);
 
     double[][] expected = {{4.0/5.0}, {-3.0/5.0}};
     double[][] result = MatLib.normalizeVector(vector);
 
-    for (int i = 0; i < expected.length; i++) {
-      for (int j = 0; j < expected[i].length; j++) {
-        assertEquals(expected[i][j], result[i][j], 0.0001);
-      }
-    }
+    check2dArray(expected, result, 0.0001);
   }
 
   @Test
@@ -36,9 +59,12 @@ public class MatLibTest {
     double[] expected = {-6, 11, -6};
     double[] result = MatLib.leverriersMethod(matrixA);
 
-    for (int i = 0; i < expected.length; i++) {
-      assertEquals(expected[i], result[i], 0.0001);
-    }
+    double[][] matrixB = {{1, -1, 0}, {0, 2, -1}, {-1, 0, 1}};
+    double[] expected2 = {-1, 5, -4};
+    double[] result2 = MatLib.leverriersMethod(matrixB);
+
+    checkArray(expected, result, 0.0001);
+    checkArray(expected2, result2, 0.001);
   }
 
   @Test
@@ -65,7 +91,7 @@ public class MatLibTest {
                           {11, 12}};
     double[][] expected = {{58, 64}, {139, 154}};
 
-    assertArrayEquals(expected, MatLib.multiplyMatrix(matrixA, matrixB));
+    check2dArray(expected, MatLib.multiplyMatrix(matrixA, matrixB), 0.0001);
   }
 
   @Test
@@ -114,17 +140,8 @@ public class MatLibTest {
     double[][] expectedArr = {{4, 1, 8}, { 0, -1.5, -1}, {0, 0, 1.0/6}};
     double[][] expectedResults = {{2}, {-2}, {5.0 / 6}};
 
-    for(int i = 0; i < expectedArr.length; i++) {
-      for(int j = 0; j < expectedArr[i].length; j++) {
-        assertEquals(expectedArr[i][j], partitions[0][i][j], 0.01);
-      }
-    }
-
-    for(int i = 0; i < expectedResults.length; i++) {
-      for (int j = 0; j < expectedResults[i].length; j++) {
-        assertEquals(expectedResults[i][j], partitions[1][i][j], 0.01);
-      }
-    }
+    check2dArray(expectedArr, partitions[0], 0.01);
+    check2dArray(expectedResults, partitions[1], 0.01);
   }
 
   @Test
@@ -135,17 +152,8 @@ public class MatLibTest {
     double[][] expected = {{3.0/4, 1.0/2, 1.0/4}, {1.0/2, 1.0, 1.0/2}, {1.0/4, 1.0/2, 3.0/4}};
     double[][] expected2 = MatLib.generateIdentityMatrix(matrixA.length);
 
-    for (int i = 0; i < expected2.length; i++) {
-      for (int j = 0; j < expected2[i].length; j++) {
-        assertEquals(expected2[i][j], partitions[0][i][j], 0.01);
-      }
-    }
-
-    for (int i = 0; i < expected.length; i++) {
-      for (int j = 0; j < expected[i].length; j++) {
-        assertEquals(expected[i][j], partitions[1][i][j], 0.01);
-      }
-    }
+    check2dArray(expected2, partitions[0], 0.01);
+    check2dArray(expected, partitions[1], 0.01);
   }
 
   @Test
@@ -192,17 +200,8 @@ public class MatLibTest {
 
     double[][] expected2 = new double[][]{{3}, {4}, {-2}};
 
-    for(int i = 0; i < expected.length; i++) {
-      for (int j = 0; j < expected[i].length; j++) {
-        assertEquals(expected[i][j], resultPart1[i][j], 0.01);
-      }
-    }
-
-    for(int i = 0; i < expected2.length; i++) {
-      for (int j = 0; j < expected2[i].length; j++) {
-        assertEquals(expected2[i][j], resultPart2[i][j], 0.01);
-      }
-    }
+    check2dArray(expected, resultPart1, 0.01);
+    check2dArray(expected2, resultPart2, 0.01);
   }
 
   @Test
@@ -276,5 +275,25 @@ public class MatLibTest {
     assertArrayEquals(twoNConst, twoNGen);
     assertArrayEquals(threeNConst, threeNGen);
     assertArrayEquals(fourNConst, fourNGen);
+  }
+
+  private void checkArray(double[] expected, double[] actual, double precision) {
+    for (int i = 0; i < expected.length; i++) {
+      assertEquals(expected[i], actual[i], precision);
+    }
+  }
+
+  private void checkArray(int[] expected, int[] actual) {
+    for (int i = 0; i < expected.length; i++) {
+      assertEquals(expected[i], actual[i]);
+    }
+  }
+
+  private void check2dArray(double[][] expected, double[][] actual, double precision) {
+    for (int i = 0; i < expected.length; i++) {
+      for (int j = 0; j < expected[i].length; j++) {
+        assertEquals(expected[i][j], actual[i][j], precision);
+      }
+    }
   }
 }
