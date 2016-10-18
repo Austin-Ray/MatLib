@@ -14,7 +14,8 @@ public final class MatLib {
   public static double[][] multiplyMatrix(double[][] matrixA, double[][] matrixB)
       throws NonConformableMatrixException {
     if (matrixA[0].length != matrixB.length) {
-      throw new NonConformableMatrixException();
+      throw new NonConformableMatrixException(String.format("Matrix A size: %s x %s, Matrix B size: %s x %s",
+          matrixA.length, matrixA[0].length, matrixB.length, matrixB[0].length));
     }
 
     double[][] result = new double[matrixA.length][matrixB[0].length];
@@ -391,30 +392,34 @@ public final class MatLib {
     return sum;
   }
 
-  public static double[][] eigenPowerMethod(double[][] matrix, double[][] initialVector) throws NonConformableMatrixException {
-    double[][] tempMatrix = copy2DMatrix(matrix);
+  public static double[][] eigenPowerMethod(double[][] matrix) throws NonConformableMatrixException {
+    double[][] matrixA = copy2DMatrix(matrix);
 
-    double e = 0.001;
-    double m = 0.001;
-    double[][] y = copy2DMatrix(initialVector);
-    double[][] eigenVector;
+    double e = 0.000001;
+    double m = 100;
+    double[][] y0 = generateVector(matrix.length, 1);
     double[][] r;
+    double[][] eigenEst;
     double k = 0;
 
-    double[][] x = multiplyMatrix(tempMatrix, y);
+    double[][] x = multiplyMatrix(matrixA, y0);
 
     do {
-      y = multipleByScalar(matrixNorm(x), x);
-      x = multiplyMatrix(tempMatrix, y);
-      double[][] yTranspose = transposeMatrix(y);
-      eigenVector = multiplyMatrix(yTranspose, x);
-      eigenVector = multiplyMatrix(eigenVector, invertMatrix(multiplyMatrix(yTranspose, y))[1]);
-      r = subtractMatrix(multiplyMatrix(eigenVector, y), x);
-      k++;
-    }
-    while (calculateDeterminant(r) > e && (k < m));
+      System.out.println(x[0][0] + "," + x[1][0]);
+      double[][] y = multipleByScalar(1.0 / vectorNorm(x), x);
 
-    return eigenVector;
+      x = multiplyMatrix(matrixA, y);
+
+      double[][] yTranpose = transposeMatrix(y);
+      eigenEst = multiplyMatrix(multiplyMatrix(yTranpose, x), invertMatrix(multiplyMatrix(yTranpose, y))[1]);
+
+      r = subtractMatrix(multipleByScalar(eigenEst[0][0], y), x);
+
+      k+=1;
+    }
+    while (vectorNorm(r) > e && (k < m));
+
+    return eigenEst;
   }
 
   public static double[] leverriersMethod(double[][] matrix) throws NonConformableMatrixException {
@@ -459,7 +464,6 @@ public final class MatLib {
   public static double[][] findCovarianceMatrix(Vector[] classVectors, Vector mean, double scalar) {
     Vector[] tempVector = classVectors.clone();
 
-    double[][] subMat;
     double[][] sumMatrix = new double[2][2];
 
     for(int i = 0; i < tempVector.length; i++) {
@@ -607,5 +611,15 @@ public final class MatLib {
     }
 
     return maxColumn;
+  }
+
+  public static double[][] generateVector(int length, int number) {
+    double[][] vector = new double[length][1];
+
+    for (int i = 0; i < vector.length; i++) {
+      vector[i][0] = number;
+    }
+
+    return vector;
   }
 }

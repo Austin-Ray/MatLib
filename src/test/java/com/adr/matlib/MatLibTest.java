@@ -5,9 +5,24 @@ import static org.junit.Assert.*;
 import com.adr.matlib.exception.NonConformableMatrixException;
 import org.junit.Test;
 
-import java.util.Random;
-
 public class MatLibTest {
+  @Test
+  public void generateVector() throws Exception {
+    double[][] expected = {{1}, {1}, {1}};
+    double[][] actual = MatLib.generateVector(3, 1);
+
+    check2dArray(expected, actual, 0.001);
+  }
+
+  @Test
+  public void eigenPowerMethod() throws Exception {
+    double[][] matrix = {{-3.9, -0.6, -3.9, 0.4}, {1,0,0,0}, {0,1,0,0}, {0,0,1,0}};
+    double[][] expected = {{-4}};
+    double[][] actual = MatLib.eigenPowerMethod(matrix);
+
+    check2dArray(expected, actual, 0.0001);
+  }
+
   @Test
   public void findCovarianceMatrix() throws Exception {
     Vector[] vectors = new Vector[5];
@@ -287,7 +302,7 @@ public class MatLibTest {
       MatLib.addMatrix(twoNGen, mismatchMatrix2);
       throw new Exception();
     } catch(NonConformableMatrixException e) {
-      return;
+      // Do nothing.
     }
   }
 
