@@ -405,7 +405,6 @@ public final class MatLib {
     double[][] x = multiplyMatrix(matrixA, y0);
 
     do {
-      System.out.println(x[0][0] + "," + x[1][0]);
       double[][] y = multipleByScalar(1.0 / vectorNorm(x), x);
 
       x = multiplyMatrix(matrixA, y);
@@ -461,19 +460,15 @@ public final class MatLib {
     return coeffOfA;
   }
 
-  public static double[][] findCovarianceMatrix(Vector[] classVectors, Vector mean, double scalar) {
+  public static double[][] findCovarianceMatrix(Vector[] classVectors, Vector mean, double scalar) throws NonConformableMatrixException {
     Vector[] tempVector = classVectors.clone();
 
     double[][] sumMatrix = new double[2][2];
 
     for(int i = 0; i < tempVector.length; i++) {
-      try {
         double[][] v1 = MatLib.subtractMatrix(classVectors[i].matrix(), mean.matrix());
         double[][] transposeResult = MatLib.multiplyMatrix(v1, MatLib.transposeMatrix(v1));
         sumMatrix = MatLib.addMatrix(sumMatrix, transposeResult);
-      } catch (NonConformableMatrixException e) {
-        e.printStackTrace();
-      }
     }
 
     sumMatrix = MatLib.multipleByScalar(scalar, sumMatrix);
