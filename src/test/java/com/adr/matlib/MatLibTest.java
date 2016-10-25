@@ -69,10 +69,16 @@ public class MatLibTest {
   public void jacobisMethod() throws Exception {
     double[][] matrixA = {{-1, 2},
                           {2, 2}};
-    double[] expected = {3, -2};
-    double[] result = MatLib.jacobisMethod(matrixA);
+    double[][] expected = {{3}, {-2}};
+    double[][][] result = MatLib.jacobisMethod(matrixA);
+    double[][] eigenValues = result[0];
+    Vector[] eigenVectors = MatLib.matrixToEigenVectors(result[1]);
+    Vector[] expectedVector = {new Vector(0.4472, 0.8944), new Vector(-0.8944, 0.4472)};
 
-    checkArray(expected, result, 0.001);
+    check2dArray(expected, eigenValues, 0.001);
+    for (int i = 0; i < expectedVector.length; i++) {
+      check2dArray(expectedVector[i].matrix(), eigenVectors[i].matrix(), 0.001);
+    }
   }
 
   @Test

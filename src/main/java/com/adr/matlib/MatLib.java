@@ -536,7 +536,7 @@ public final class MatLib {
     return Math.sqrt(sum);
   }
 
-  public static double[] jacobisMethod(double[][] matrixA) throws NonConformableMatrixException {
+  public static double[][][] jacobisMethod(double[][] matrixA) throws NonConformableMatrixException {
     if(matrixA.length != matrixA[0].length) {
       throw new NonConformableMatrixException("Not NxN");
     }
@@ -547,7 +547,7 @@ public final class MatLib {
 
     double[][] A = copy2DMatrix(matrixA);
     double[][] P = generateIdentityMatrix(matrixA.length);
-    double[] lambdas = new double[A.length];
+    double[][] lambdas = new double[A.length][1];
     double e = 0.0001;
 
     while(Math.abs(A[p][q]) > e) {
@@ -571,10 +571,14 @@ public final class MatLib {
     }
 
     for(int k = 0; k < lambdas.length; k++) {
-      lambdas[k] = A[k][k];
+      lambdas[k][0] = A[k][k];
     }
 
-    return lambdas;
+    double[][][] lambdaAndVectors = new double[2][][];
+    lambdaAndVectors[0] = lambdas;
+    lambdaAndVectors[1] = P;
+
+    return lambdaAndVectors;
   }
 
   public static int[] highestMagnitudeCoordinate(double[][] matrix) {
@@ -616,5 +620,21 @@ public final class MatLib {
     }
 
     return vector;
+  }
+
+  /**
+   * Partitions a matrix to eigen vectors
+   * @param matrix    Input matrix
+   * @return          Array of Vectors
+   */
+  public static Vector[] matrixToEigenVectors(double[][] matrix) {
+    Vector[] eigenVectors = new Vector[matrix.length];
+
+
+    for(int column = 0; column < matrix[0].length; column++) {
+      eigenVectors[column] = new Vector(matrix[0][column], matrix[1][column]);
+    }
+
+    return eigenVectors;
   }
 }
