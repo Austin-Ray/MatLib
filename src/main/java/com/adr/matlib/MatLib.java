@@ -4,8 +4,30 @@ import com.adr.matlib.exception.NonConformableMatrixException;
 
 public final class MatLib {
 
-  public static double fastFourierTransform() {
-    return 0.0;
+  public static Complex[] fastFourierTransform(Complex[] z, int d) {
+    int n = z.length;
+    double theta = (-2 * Math.PI * d) / n;
+    int r = n / 2;
+
+    for (int i = 0; i <= n - 1;) {
+      Complex w = new Complex(Math.cos(i * theta), Math.sin(i * theta));
+
+      for (int k = 0; k <= n-1; ) {
+        Complex u = new Complex(1,0);
+
+        for (int m = 0; m <= r - 1; ) {
+          Complex t = z[k+m].minus(z[k+m+r]);
+          z[k+m] = z[k+m].plus(z[k+m+r]);
+          z[k+m+r] = t.times(u);
+          u = u.times(w);
+        }
+        k = k + 2*r;
+      }
+      i = 2*i;
+      r = r / 2;
+    }
+
+    return z;
   }
 
   /**
