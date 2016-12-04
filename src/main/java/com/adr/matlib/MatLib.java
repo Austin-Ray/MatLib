@@ -4,6 +4,10 @@ import com.adr.matlib.exception.NonConformableMatrixException;
 
 public final class MatLib {
 
+  public static double fastFourierTransform() {
+    return 0.0;
+  }
+
   /**
    * Multiple two matrices
    * @param matrixA                           Matrix A
