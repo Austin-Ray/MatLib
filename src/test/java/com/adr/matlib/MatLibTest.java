@@ -7,6 +7,52 @@ import org.junit.Test;
 
 public class MatLibTest {
   @Test
+  public void fastFourierTransform() throws Exception {
+    Complex[] input = new Complex[16];
+    input[0] = new Complex(26160,0);
+    input[1] = new Complex(19011,0);
+    input[2] = new Complex(18757,0);
+    input[3] = new Complex(18405,0);
+    input[4] = new Complex(17888,0);
+    input[5] = new Complex(14720,0);
+    input[6] = new Complex(14285,0);
+    input[7] = new Complex(17018,0);
+    input[8] = new Complex(18014,0);
+    input[9] = new Complex(17119,0);
+    input[10] = new Complex(16400,0);
+    input[11] = new Complex(17497,0);
+    input[12] = new Complex(17846,0);
+    input[13] = new Complex(15700,0);
+    input[14] = new Complex(17636,0);
+    input[15] = new Complex(17181,0);
+
+    Complex[] expected = new Complex[16];
+    expected[0] = new Complex(283637,0);
+    expected[1] = new Complex(14803.244266628797,65.72381228100039);
+    expected[2] = new Complex(11273.376872214496,-8477.782568935876);
+    expected[3] = new Complex(3151.9643891161368,-880.0767783428737);
+    expected[4] = new Complex(12830.0,3551.0);
+    expected[5] = new Complex(5067.704596858236,-2369.8050593417292);
+    expected[6] = new Complex(5606.623127785506,-2005.782568935876);
+    expected[7] = new Complex(9561.086747396832,-1256.0044687178556);
+    expected[8] = new Complex(10335.0,0);
+    expected[9] = new Complex(9561.086747396832,1256.0044687178556);
+    expected[10] = new Complex(5606.623127785504,2005.782568935877);
+    expected[11] = new Complex(5067.704596858236,2369.8050593417292);
+    expected[12] = new Complex(12830.0,-3551.0);
+    expected[13] = new Complex(3151.9643891161363, 880.0767783428732);
+    expected[14] = new Complex(11273.376872214494,8477.782568935876);
+    expected[15] = new Complex(14803.244266628797,-65.72381228100005);
+
+    Complex[] actual = MatLib.fastFourierTransform(input, 1);
+
+    for (int i = 0; i < actual.length; i++) {
+      assertEquals(expected[i].re(), actual[i].re(), 0.01);
+      assertEquals(expected[i].im(), actual[i].im(), 0.01);
+    }
+  }
+
+  @Test
   public void generateVector() throws Exception {
     double[][] expected = {{1}, {1}, {1}};
     double[][] actual = MatLib.generateVector(3, 1);

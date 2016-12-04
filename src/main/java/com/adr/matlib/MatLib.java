@@ -4,27 +4,55 @@ import com.adr.matlib.exception.NonConformableMatrixException;
 
 public final class MatLib {
 
+  /**
+   * Performs a fast fourier transform
+   * @param z     N x 1 Vector of complex numbers
+   * @param d     Direction vector. 1 for FFT, -1 for inverse FFT
+   * @return      FFT or inverse FFT of Z
+   */
   public static Complex[] fastFourierTransform(Complex[] z, int d) {
     int n = z.length;
     double theta = (-2 * Math.PI * d) / n;
     int r = n / 2;
+    int k, m;
+    Complex t;
 
-    for (int i = 0; i <= n - 1;) {
+    for (int i = 1; i <= n-1; i *= 2) {
       Complex w = new Complex(Math.cos(i * theta), Math.sin(i * theta));
 
-      for (int k = 0; k <= n-1; ) {
+      for (k = 0; k <= n-1; k += 2*r) {
         Complex u = new Complex(1,0);
-
-        for (int m = 0; m <= r - 1; ) {
-          Complex t = z[k+m].minus(z[k+m+r]);
+        for (m = 0; m <= r - 1; m++) {
+          t = z[k+m].minus(z[k+m+r]);
           z[k+m] = z[k+m].plus(z[k+m+r]);
           z[k+m+r] = t.times(u);
           u = u.times(w);
         }
-        k = k + 2*r;
       }
-      i = 2*i;
       r = r / 2;
+    }
+
+    for (int i = 0; i <= n-1; i++) {
+      r = i;
+      k = 0;
+
+      for(m = 1; m <= n - 1;) {
+        k = 2*k + (r % 2);
+        r /= 2;
+        m *= 2;
+      }
+
+      if (k > i) {
+        t = z[i];
+        z[i] = z[k];
+        z[k] = t;
+      }
+    }
+
+    if (d < 0) {
+      for(int i = 0; i <= n - 1; i++) {
+        z[i] = z[i].scale(n);
+      }
     }
 
     return z;
