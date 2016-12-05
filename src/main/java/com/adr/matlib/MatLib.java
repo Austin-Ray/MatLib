@@ -4,6 +4,52 @@ import com.adr.matlib.exception.NonConformableMatrixException;
 
 public final class MatLib {
 
+  public static double[] smoothSignal(double[] original, int p) {
+    double[] smooth = new double[original.length];
+    System.arraycopy(original, 0, smooth, 0, smooth.length);
+
+    for (int k = 0; k < smooth.length; k++) {
+      double sum = 0.0;
+      for(int i = 0; i < p; i++) {
+        sum += original[k - i];
+      }
+      smooth[k] = (1.0 / p) * sum;
+    }
+
+    return smooth;
+  }
+
+  public static double calculateRange(double c, double samplingRate, double offset, double[] sent, double[] received) {
+    double T = 1 / samplingRate;
+    double[] cc = crossCorrelation(sent, received);
+    int d = 0;
+    double max = 0;
+
+    for(int i = 0; i < cc.length; i++) {
+      if(cc[i] > max) {
+        max = cc[i];
+        d = i;
+      }
+    }
+
+    return (c * d * T) / 2 + (offset * c);
+  }
+
+  public static double[] crossCorrelation(double[] x, double[] y) {
+    int n = x.length;
+    double[] r = new double[n];
+
+    for (int i  = 0; i < n; i++) {
+      r[i] = 0.0;
+
+      for(int k = i; k < n; k++) {
+        r[i] += x[k] * y[k - i];
+      }
+    }
+
+    return r;
+  }
+
   /**
    * Performs a fast fourier transform
    * @param z     N x 1 Vector of complex numbers
