@@ -2,48 +2,194 @@ package com.adr.matlib;
 
 import com.adr.matlib.exception.NonConformableMatrixException;
 
+import java.util.Arrays;
+
 public final class MatLib {
 
-  public static double[] smoothSignal(double[] original, int p) {
-    double[] smooth = new double[original.length];
-    System.arraycopy(original, 0, smooth, 0, smooth.length);
-
-    for (int k = 0; k < smooth.length; k++) {
+  private static void f(int s) {
+    for(int i = 0; i < 512; i++) {
       double sum = 0.0;
-      for(int i = 0; i < p; i++) {
-        sum += original[k - i];
-      }
-      smooth[k] = (1.0 / p) * sum;
-    }
 
-    return smooth;
+      for(int k = 1; k <= s; k++) {
+        sum += Math.sin(2 * Math.PI * (2 * k - 1) * (i * 1.0 / 512)) / (2 * k - 1);
+      }
+
+      System.out.println(sum);
+    }
   }
 
-  public static double calculateRange(double c, double samplingRate, double offset, double[] sent, double[] received) {
-    double T = 1 / samplingRate;
-    double[] cc = crossCorrelation(sent, received);
-    int d = 0;
-    double max = 0;
+  private static void g(int s) {
+    for(int i = 0; i < 512; i++) {
+      double sum = 0.0;
 
-    for(int i = 0; i < cc.length; i++) {
-      if(cc[i] > max) {
-        max = cc[i];
-        d = i;
+      for(int k = 1; k <= s; k++) {
+        sum += Math.sin(2 * Math.PI * (2 * k) * (i * 1.0 / 512)) / (2 * k);
+      }
+
+      System.out.println(sum);
+    }
+  }
+
+  public static double[] sinSummation(double a, double f1, double f2, double c, int samples) {
+    double[] sum = new double[samples];
+
+    for(int i = 0; i < samples; i++) {
+      sum[i] = sin(a, f1, c, i * 1.0 / samples) + sin(a, f2, c, i * 1.0 / samples);
+    }
+
+    return sum;
+  }
+
+  public static double[] sinProduct(double a, double f1, double f2, double c, int samples) {
+    double[] product = new double[samples];
+
+    for(int i = 0; i < samples; i++) {
+      product[i] = sin(a, f1, c, i * 1.0 / samples) * sin(a, f2, c, i * 1.0 / samples);
+    }
+
+    return product;
+  }
+
+  public static double sin(double a, double f, double c, double t) {
+    return a * Math.sin(2 * Math.PI * f * (t - c));
+  }
+
+  public static double[] lowPassFilter(double[] data, int n) {
+    double[] filter = new double[data.length];
+
+    for(int i = 0; i < n; i++) {
+      filter[i] = 1;
+      filter[filter.length - i - 1] = 1;
+    }
+
+    return applyFilter(data, filter);
+  }
+
+  public static double[] highPassFilter(double[] data, int n) {
+    double[] filter = new double[data.length];
+    Arrays.fill(filter, 1);
+
+    for(int i = 0; i < n; i++) {
+      filter[i] = 0;
+    }
+
+    return applyFilter(data, filter);
+  }
+
+  public static double[] bandPassFilter(double[] data, int lowerBound, int upperBound) {
+    return applyFilter(data, generateBandFilter(data.length, lowerBound, upperBound, 0, 1));
+  }
+
+  public static double[] notchFilter(double[] data, int lowerBound, int upperBound) {
+    return applyFilter(data, generateBandFilter(data.length, lowerBound, upperBound, 1, 0));
+  }
+
+  private static double[] generateBandFilter(int length, int lowerBound, int upperBound, int fillValue, int filterValue) {
+    double[] filter = new double[length];
+    Arrays.fill(filter, fillValue);
+
+    for(int i = lowerBound; i <= upperBound; i++) {
+      filter[i] = filterValue;
+    }
+
+    for(int i = lowerBound; i < upperBound; i++) {
+      filter[filter.length - 1 - i] = filterValue;
+    }
+
+    return filter;
+  }
+
+  private static double[] applyFilter(double[] data, double[] filter) {
+    double[] duplicate = new double[data.length];
+    System.arraycopy(data, 0, duplicate, 0, duplicate.length);
+
+    for (int i = 0; i < duplicate.length; i++) {
+      duplicate[i] *= filter[i];
+    }
+
+    return duplicate;
+  }
+
+  public static double[] PSD(Complex[] z) {
+    double[] psd = new double[z.length];
+    Complex[] fft = fastFourierTransform(z,1);
+
+    for (int i = 0; i < fft.length; i++) {
+      psd[i] = fft[i].times(fft[i]).abs();
+    }
+
+    return psd;
+  }
+
+  public static double[] fftConvolution(double[] uArray, int p) {
+    int n = uArray.length;
+
+    Complex[] u = new Complex[n];
+    Complex[] h = new Complex[n];
+
+    for (int i = 0; i < uArray.length; i++) {
+      u[i] = new Complex(uArray[i], 0);
+    }
+
+    for (int i = 0; i < h.length; i++) {
+      if(i < p) {
+        h[i] = new Complex(1.0 / p, 0);
+      } else {
+        h[i] = new Complex(0, 0);
       }
     }
 
-    return (c * d * T) / 2 + (offset * c);
+    Complex[] uFFT = fastFourierTransform(u, 1);
+    Complex[] hFFT = fastFourierTransform(h, 1);
+
+    Complex[] con = new Complex[n];
+
+    for (int i = 0; i < con.length; i++) {
+      con[i] = hFFT[i].times(uFFT[i]);
+    }
+
+    con = fastFourierTransform(con, -1);
+
+    double[] real = new double[n];
+
+    for (int i = 0; i < real.length; i++) {
+      real[i] = con[i].re();
+    }
+
+    return real;
   }
 
-  public static double[] crossCorrelation(double[] x, double[] y) {
+  public static double[] normalizedCrossCorrelatiton(double[] y, double[] x) {
+    double[] correlation = crossCorrelation(y, x);
+    double[] autoXCorr = autoCorrelation(x);
+    double[] autoYCorr = autoCorrelation(y);
+    double[] norm = new double[correlation.length];
+
+    for (int i = 0; i < norm.length; i++) {
+      norm[i] = correlation[i] / Math.sqrt(autoXCorr[0] * autoYCorr[0]);
+    }
+
+    return norm;
+  }
+
+  public static double[] autoCorrelation(double[] x) {
+    return crossCorrelation(x, x);
+  }
+
+  public static double[] crossCorrelation(double[] y, double[] x) {
     int n = x.length;
     double[] r = new double[n];
+    double[] y2 = new double[n];
+    double[] x2 = new double[n];
 
-    for (int i  = 0; i < n; i++) {
+    System.arraycopy(y, 0, y2, 0, y.length);
+    System.arraycopy(x, 0, x2, 0, x2.length);
+
+    for (int i = 0; i < n; i++) {
       r[i] = 0.0;
 
       for(int k = i; k < n; k++) {
-        r[i] += x[k] * y[k - i];
+        r[i] += x2[k] * y2[k - i];
       }
     }
 
@@ -52,11 +198,14 @@ public final class MatLib {
 
   /**
    * Performs a fast fourier transform
-   * @param z     N x 1 Vector of complex numbers
+   * @param original     N x 1 Vector of complex numbers
    * @param d     Direction vector. 1 for FFT, -1 for inverse FFT
    * @return      FFT or inverse FFT of Z
    */
-  public static Complex[] fastFourierTransform(Complex[] z, int d) {
+  public static Complex[] fastFourierTransform(Complex[] original, int d) {
+    Complex[] z = new Complex[original.length];
+    System.arraycopy(original, 0, z, 0, z.length);
+
     int n = z.length;
     double theta = (-2 * Math.PI * d) / n;
     int r = n / 2;
@@ -97,7 +246,7 @@ public final class MatLib {
 
     if (d < 0) {
       for(int i = 0; i <= n - 1; i++) {
-        z[i] = z[i].scale(n);
+        z[i] = z[i].scale(1.0/n);
       }
     }
 
